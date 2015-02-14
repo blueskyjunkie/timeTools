@@ -28,3 +28,43 @@ def convertFfoPpbToSkew (ffoPpb):
     Convert frequency skew to Fraction Frequency Offset (FFO) in ppb.
     '''
     return((ffoPpb * 1e-9) + 1)
+
+
+def convertFfoPpbToOffsetHz (ffoPpb, referenceFrequencyHz):
+    '''
+    Convert Fractional Frequency Offset (FFO) in ppb to FFO in Hz.
+    
+    The reference frequency in Hz also needs to be specified.
+    '''
+
+    return(ffoPpb * referenceFrequencyHz * 1e-9)
+
+
+def convertSkewToOffsetHz (skew, referenceFrequencyHz):
+    '''
+    Convert Fractional Frequency Offset (FFO) in ppb to FFO in Hz.
+    
+    The reference frequency in Hz also needs to be specified.
+    '''
+
+    return((skew * referenceFrequencyHz) - referenceFrequencyHz)
+
+
+def convertFfoPpbToHz (ffoPpb, referenceFrequencyHz):
+    '''
+    Convert Fractional Frequency Offset (FFO) in ppb to absolute frequency in Hz.
+    
+    The reference frequency in Hz also needs to be specified.
+    '''
+
+    return((ffoPpb * referenceFrequencyHz * 1e-9) + referenceFrequencyHz)
+
+
+def convertSkewToHz (skew, referenceFrequencyHz):
+    '''
+    Convert Fractional Frequency Offset (FFO) in ppb to absolute frequency in Hz.
+    
+    The reference frequency in Hz also needs to be specified.
+    '''
+
+    return(skew * referenceFrequencyHz)

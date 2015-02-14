@@ -45,6 +45,98 @@ class TestFrequency (unittest.TestCase):
         self.assertTrue(numpy.all(thisTolerance.isWithinTolerance(actualSkew - 1)), 'Calculated skew not equivalent')
 
 
+    def testConvertFfoPpbToOffsetHz1(self):
+        referenceFrequencyHz = 10e6
+        inputFfoPpb = numpy.array([300, 6000, 50])
+        expectedOffsetHz = numpy.array([3, 60, 0.5])
+        
+        actualOffsetHz = tsf.convertFfoPpbToOffsetHz(inputFfoPpb, referenceFrequencyHz)
+        
+        thisTolerance = spt.ToleranceValue(expectedOffsetHz, 0.1, spt.ToleranceUnit['percent'])
+        self.assertTrue(numpy.all(thisTolerance.isWithinTolerance(actualOffsetHz)), 'Frequency offset calculated from ppb not equivalent')
+
+
+    def testConvertFfoPpbToOffsetHz2(self):
+        referenceFrequencyHz = numpy.array([10e6, 1.5e9, 200e6])
+        inputOffsetPpb = numpy.array([300, 6000, 50])
+        expectedOffsetHz = numpy.array([3, 9000, 10])
+        
+        actualOffsetHz = tsf.convertFfoPpbToOffsetHz(inputOffsetPpb, referenceFrequencyHz)
+        
+        thisTolerance = spt.ToleranceValue(expectedOffsetHz, 0.1, spt.ToleranceUnit['percent'])
+        self.assertTrue(numpy.all(thisTolerance.isWithinTolerance(actualOffsetHz)), 'Array Frequency offset calculated from ppb not equivalent')
+
+
+    def testConvertSkewToOffsetHz1(self):
+        referenceFrequencyHz = 10e6
+        inputFfoPpb = numpy.array([300, 6000, 50])
+        inputSkew = tsf.convertFfoPpbToSkew(inputFfoPpb)
+        expectedOffsetHz = numpy.array([3, 60, 0.5])
+        
+        actualOffsetHz = tsf.convertSkewToOffsetHz(inputSkew, referenceFrequencyHz)
+        
+        thisTolerance = spt.ToleranceValue(expectedOffsetHz, 0.1, spt.ToleranceUnit['percent'])
+        self.assertTrue(numpy.all(thisTolerance.isWithinTolerance(actualOffsetHz)), 'Frequency offset calculated from skew not equivalent')
+
+
+    def testConvertSkewToOffsetHz2(self):
+        referenceFrequencyHz = numpy.array([10e6, 1.5e9, 200e6])
+        inputFfoPpb = numpy.array([300, 6000, 50])
+        inputSkew = tsf.convertFfoPpbToSkew(inputFfoPpb)
+        expectedOffsetHz = numpy.array([3, 9000, 10])
+        
+        actualOffsetHz = tsf.convertSkewToOffsetHz(inputSkew, referenceFrequencyHz)
+        
+        thisTolerance = spt.ToleranceValue(expectedOffsetHz, 0.1, spt.ToleranceUnit['percent'])
+        self.assertTrue(numpy.all(thisTolerance.isWithinTolerance(actualOffsetHz)), 'Array Frequency offset calculated from skew not equivalent')
+
+
+    def testConvertFfoPpbToHz1(self):
+        referenceFrequencyHz = 10e6
+        inputFfoPpb = numpy.array([300, 6000, 50])
+        expectedFrequencyHz = numpy.array([3, 60, 0.5]) + referenceFrequencyHz
+        
+        actualFrequencyHz = tsf.convertFfoPpbToHz(inputFfoPpb, referenceFrequencyHz)
+        
+        thisTolerance = spt.ToleranceValue(expectedFrequencyHz, 0.1, spt.ToleranceUnit['percent'])
+        self.assertTrue(numpy.all(thisTolerance.isWithinTolerance(actualFrequencyHz)), 'Frequency calculated from ppb not equivalent')
+
+
+    def testConvertFfoPpbToHz2(self):
+        referenceFrequencyHz = numpy.array([10e6, 1.5e9, 200e6])
+        inputFfoPpb = numpy.array([300, 6000, 50])
+        expectedFrequencyHz = numpy.array([3, 9000, 10]) + referenceFrequencyHz
+        
+        actualFrequencyHz = tsf.convertFfoPpbToHz(inputFfoPpb, referenceFrequencyHz)
+        
+        thisTolerance = spt.ToleranceValue(expectedFrequencyHz, 0.1, spt.ToleranceUnit['percent'])
+        self.assertTrue(numpy.all(thisTolerance.isWithinTolerance(actualFrequencyHz)), 'Array Frequency calculated from ppb not equivalent')
+
+
+    def testConvertSkewToHz1(self):
+        referenceFrequencyHz = 10e6
+        inputFfoPpb = numpy.array([300, 6000, 50])
+        inputSkew = tsf.convertFfoPpbToSkew(inputFfoPpb)
+        expectedFrequencyHz = numpy.array([3, 60, 0.5]) + referenceFrequencyHz
+        
+        actualFrequencyHz = tsf.convertSkewToHz(inputSkew, referenceFrequencyHz)
+        
+        thisTolerance = spt.ToleranceValue(expectedFrequencyHz - referenceFrequencyHz, 0.1, spt.ToleranceUnit['percent'])
+        self.assertTrue(numpy.all(thisTolerance.isWithinTolerance(actualFrequencyHz - referenceFrequencyHz)), 'Frequency calculated from skew not equivalent')
+
+
+    def testConvertSkewToHz2(self):
+        referenceFrequencyHz = numpy.array([10e6, 1.5e9, 200e6])
+        inputFfoPpb = numpy.array([300, 6000, 50])
+        inputSkew = tsf.convertFfoPpbToSkew(inputFfoPpb)
+        expectedFrequencyHz = numpy.array([3, 9000, 10]) + referenceFrequencyHz
+        
+        actualFrequencyHz = tsf.convertSkewToHz(inputSkew, referenceFrequencyHz)
+        
+        thisTolerance = spt.ToleranceValue(expectedFrequencyHz - referenceFrequencyHz, 0.1, spt.ToleranceUnit['percent'])
+        self.assertTrue(numpy.all(thisTolerance.isWithinTolerance(actualFrequencyHz - referenceFrequencyHz)), 'Array Frequency calculated from skew not equivalent')
+
+
 if __name__ == "__main__":
     unittest.main()
     
