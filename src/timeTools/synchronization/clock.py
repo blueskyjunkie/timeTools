@@ -16,6 +16,7 @@
 '''
 
 import numpy
+import numpy.random as nr
 
 
 class Model:
@@ -28,7 +29,7 @@ class Model:
     calculateOffset calculate the offset relative to the last call.
     '''
     
-    def __init__ (self, rmsJitterPpb = 0, initialFfoPpb = 0, initialTimeOffsetSeconds = 0, initialReferenceTimeSeconds = 0):
+    def __init__ (self, rmsJitterPpb = 0, initialFfoPpb = 0, initialTimeOffsetSeconds = 0, initialReferenceTimeSeconds = 0, randomSeed = None):
         self._initialFfoPpb = initialFfoPpb
         self._rmsJitterPpb = rmsJitterPpb
         
@@ -36,6 +37,13 @@ class Model:
         self._lastReferenceTimeSeconds = numpy.array([initialReferenceTimeSeconds])
         self._lastTimeOffsetSeconds = initialTimeOffsetSeconds
         self._lastFfoPpb = initialFfoPpb
+        
+        self._randomGenerator = None
+        if randomSeed is not None:
+            # Assume randomSeed is a 32 bit integer
+            self._randomGenerator = nr.RandomState(randomSeed)
+        else:
+            self._randomGenerator = nr.RandomState()
         
         
     def calculateOffset (self, referenceTimeSeconds):
@@ -46,7 +54,7 @@ class Model:
         
         jitterPpb = 0
         if self._rmsJitterPpb != 0:
-            jitterPpb = numpy.random.normal(scale = self._rmsJitterPpb, size = numberDeltaSamples)
+            jitterPpb = self._randomGenerator.normal(scale = self._rmsJitterPpb, size = numberDeltaSamples)
             
         instantaneousLoFfoPpb = (self._initialFfoPpb * numpy.ones(numberDeltaSamples)) + jitterPpb
         # Make sure that the FFO from the previous iteration is accurately accounted for.

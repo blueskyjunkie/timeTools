@@ -80,12 +80,34 @@ class TestClock (unittest.TestCase):
         actualLocalTimeSeconds, instantaneousLoFfoPpb = clockModel.calculateOffset(referenceTimeSeconds)
         actualTimeErrorSeconds = sag810.calculateTimeError(actualLocalTimeSeconds, referenceTimeSeconds)
         
-        print(expectedTimeErrorSeconds)
-        print(actualTimeErrorSeconds)
-        
         self.assertTrue(numpy.all(instantaneousLoFfoPpb == initialFfoPpb), 'Instantaneous FFO not initialFfoPpb')
         thisTolerance = spt.ToleranceValue(expectedTimeErrorSeconds, 0.1, spt.ToleranceUnit['percent'])
         self.assertTrue(numpy.all(thisTolerance.isWithinTolerance(actualTimeErrorSeconds)), 'Timebases not equivalent')
+
+
+    def testClockRandomSeed (self):
+        timeStepSeconds = 1 / 16
+        numberSamples = 10
+        
+        initialFfoPpb = 100e3
+        rmsJitterPpb = 3.0
+        
+        referenceTimeGenerator = st.referenceGenerator(timeStepSeconds)
+        referenceTimeSeconds = referenceTimeGenerator.generate(numberSamples)
+        
+        # Two models with the same seed should generate the exact same sequence
+        clockModel1 = tsc.Model(initialFfoPpb = initialFfoPpb, rmsJitterPpb = rmsJitterPpb, randomSeed = 1459)
+        clockModel2 = tsc.Model(initialFfoPpb = initialFfoPpb, rmsJitterPpb = rmsJitterPpb, randomSeed = 1459)
+        clockModel3 = tsc.Model(initialFfoPpb = initialFfoPpb, rmsJitterPpb = rmsJitterPpb, randomSeed = 5986)
+        
+        actualLocalTimeSeconds1, instantaneousLoFfoPpb1 = clockModel1.calculateOffset(referenceTimeSeconds)
+        actualLocalTimeSeconds2, instantaneousLoFfoPpb2 = clockModel2.calculateOffset(referenceTimeSeconds)
+        actualLocalTimeSeconds3, instantaneousLoFfoPpb3 = clockModel3.calculateOffset(referenceTimeSeconds)
+        
+        self.assertTrue(numpy.all(instantaneousLoFfoPpb1 == instantaneousLoFfoPpb2), 'Instantaneous FFO with identical seed not the same')
+        self.assertFalse(numpy.all(instantaneousLoFfoPpb1 == instantaneousLoFfoPpb3), 'Instantaneous FFO with different seed is the same')
+        self.assertTrue(numpy.all(actualLocalTimeSeconds1 == actualLocalTimeSeconds2), 'Timebases with identical seed not the same')
+        self.assertFalse(numpy.all(actualLocalTimeSeconds1 == actualLocalTimeSeconds3), 'Timebases with identical seed is the same')
 
 
 if __name__ == "__main__":
