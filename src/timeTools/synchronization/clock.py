@@ -17,8 +17,6 @@
 
 import numpy
 
-import timeTools.synchronization.frequency as tsf
-
 
 class Model:
     '''
