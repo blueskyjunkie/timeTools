@@ -36,7 +36,7 @@ def calculateMtie (localTime, referenceTime, samplingInterval, desiredNumberObse
     
     intervalIndex = si.generateMonotonicLogScale(numpy.floor(si.generateLogIntervalScale(1, maxIntervalIndex, desiredNumberObservations)))
     
-    mtie = []
+    mtie = numpy.array([])
     if maximumNumberWorkers == 1:
         mtie = _calculateSingleProcessMtie(timeError, intervalIndex)
     else:
@@ -77,7 +77,7 @@ def _calculateMultiprocessMtie (timeError, intervalIndex, neededNumberWorkers):
     
     assert(all(sortedIntervalResults == intervalIndex))
     
-    return mtie
+    return numpy.array(mtie)
 
 
 def _calculateSingleProcessMtie (timeError, intervalIndex):
@@ -98,5 +98,5 @@ def _calculateSingleProcessMtie (timeError, intervalIndex):
         
         mtie[k] = samk.smartWindow(timeError, thisInterval)
             
-    return mtie
+    return numpy.array(mtie)
     

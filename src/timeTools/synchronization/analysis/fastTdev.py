@@ -44,7 +44,7 @@ def calculateTdev (localTime,
 
     intervalIndex = si.generateMonotonicLogScale(numpy.floor(si.generateLogIntervalScale(1, maxIntervalIndex, desiredNumberObservations)))
     
-    tdev = []
+    tdev = numpy.array([])
     if maximumNumberWorkers == 1:
         tdev = _calculateSingleProcessTdev(timeError, intervalIndex, rawTdevSize)
     else:
@@ -150,4 +150,4 @@ def _calculateMultiprocessdev (timeError,
     assert(len(tdevResults) == len(intervalIndex))
     assert(all(selectedIntervalResults == intervalIndex))
     
-    return selectedTdev
+    return numpy.array(selectedTdev)
