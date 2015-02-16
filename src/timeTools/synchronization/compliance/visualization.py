@@ -51,4 +51,6 @@ class plot:
             maskKwargs = thisElement[1]
             
             thisMask.addToPlot(figureHandle.number, **maskKwargs)
+            
+        return figureHandle
         
