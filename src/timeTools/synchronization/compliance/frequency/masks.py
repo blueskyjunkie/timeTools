@@ -15,4 +15,13 @@
     along with timeTools.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-from timeTools.synchronization.compliance.frequency.masks import *
+import timeTools.synchronization.compliance.general as generalCompliance
+
+
+ffo16ppbMask = generalCompliance.createSimpleThresholdMask(16, 0, lowerThreshold=-16)
+
+
+def generateThresholdMask (ffoThresholdPpb):
+    ffoPpbMask = generalCompliance.createSimpleThresholdMask(ffoThresholdPpb, 0, lowerThreshold=-ffoThresholdPpb)
+    
+    return ffoPpbMask
