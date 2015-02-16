@@ -18,14 +18,20 @@
 import numpy
 
 
+def _calculatePeakToPeakAmplitude (signal):
+    maxError = numpy.max(signal)
+    minError = numpy.min(signal)
+    
+    peakToPeakAmplitude = maxError - minError
+    
+    return peakToPeakAmplitude
+
+
 def slidingWindow (timeError, thisInterval):
     thisMtie = 0
     for m in numpy.arange(0, timeError.size, 1):
-        thisWindow = timeError[m : (m + thisInterval + 1) : 1]
-        maxError = numpy.max(thisWindow)
-        minError = numpy.min(thisWindow)
-        
-        peakToPeakError = maxError - minError;
+        thisWindow = timeError[m : (m + thisInterval) : 1]
+        peakToPeakError = _calculatePeakToPeakAmplitude(thisWindow)
         
         if peakToPeakError > thisMtie:
             thisMtie = peakToPeakError
@@ -50,17 +56,16 @@ def smartWindow (timeError, thisInterval):
         
         return minSignalPosition
     
+    numberSamples= timeError.size
+    
     thisMtie = 0
     
     m = 0
     completed = False
     lastIteration = False
     while not completed:
-        thisWindow = timeError[m : (m + thisInterval + 1) : 1]
-        maxError = numpy.max(thisWindow)
-        minError = numpy.min(thisWindow)
-        
-        peakToPeakError = maxError - minError;
+        thisWindow = timeError[m : (m + thisInterval) : 1]        
+        peakToPeakError = _calculatePeakToPeakAmplitude(thisWindow)
         
         if peakToPeakError > thisMtie:
             thisMtie = peakToPeakError
@@ -72,12 +77,11 @@ def smartWindow (timeError, thisInterval):
             
         if lastIteration:
             completed = True
-        
-        if nextWindowPosition == m:
-            nextWindowPosition = numpy.max([maxSignalPosition, minSignalPosition])
-        
-        if (nextWindowPosition + thisInterval) >= timeError.size:
-            nextWindowPosition = timeError.size - thisInterval
+        elif nextWindowPosition == m:
+            nextWindowPosition = m + 1
+            
+        if (nextWindowPosition + thisInterval) >= numberSamples:
+            nextWindowPosition = numberSamples - thisInterval
             lastIteration = True
             
         m = nextWindowPosition
