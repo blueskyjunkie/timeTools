@@ -1,13 +1,11 @@
 # timeTools
 
-[https://github.com/blueskyjunkie/timeTools](https://github.com/blueskyjunkie/timeTools)
-
 Python utilities relating to synchronization analysis and visualization such as time error, MTIE, TDEV and others.
 
 PDV generation using methods such as ITU-T G.8263 are also included.
 
 ## License
-GPL v3. See [LICENSE](https://github.com/blueskyjunkie/timeTools/blob/master/LICENSE) for the details.
+GPL v3. See [LICENSE](LICENSE) for the details.
 
 ## Dependencies
 
