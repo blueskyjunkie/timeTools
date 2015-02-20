@@ -86,3 +86,33 @@ def plotMinimumThresholdOnPdv (referenceTimeSeconds, inputPdv, timeStepSeconds, 
     ax.grid()
     
     return figureNumber
+
+
+def plotPdvHistogram (inputData, bins = 100, xUnit = '', yUnit = '', figureInstance = None):
+    frequencyData = None
+    binData = None
+    if isinstance(inputData, tuple):
+        frequencyData, binData = inputData
+    elif isinstance(inputData, numpy.ndarray):  
+        frequencyData, binData = numpy.histogram(inputData, bins = bins)
+    else:
+        raise pex.VisualizationException('Incorrect input data')
+    
+    figureNumber = []
+    if figureInstance != None:
+        mpp.figure(figureInstance)
+        figureNumber = figureInstance
+    else:
+        figureHandle = mpp.figure()
+        figureNumber = figureHandle.number
+        
+    mpp.bar(binData[:-1], frequencyData, width = numpy.diff(binData))
+    mpp.xlim(min(binData), max(binData))
+    
+    xLabel = 'Delay bin ' + xUnit
+    mpp.xlabel(xLabel)
+    
+    yLabel = 'Bin frequency ' + yUnit
+    mpp.ylabel(yLabel)
+    
+    return figureNumber
