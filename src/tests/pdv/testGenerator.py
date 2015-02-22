@@ -19,7 +19,8 @@ import numpy
 import math
 import unittest
 
-import timeTools.pdv.generator as tpg
+import timeTools.pdv.generator.general as tpgg
+import timeTools.pdv.generator.parameters as tpgp
 from timeTools.synchronization.compliance.general import createSimpleThresholdMask
 
 
@@ -36,14 +37,14 @@ class TestGenerator (unittest.TestCase):
     def testGenerateGaussian1 (self):
         clipThresholds = ( 9, 1 )
         
-        parameters = tpg.GaussianParameters()
+        parameters = tpgp.GaussianParameters()
         parameters.mean = self._mean
         parameters.standardDeviation = self._standardDeviation
         parameters.upperThreshold = clipThresholds[0]
         parameters.lowerThreshold = clipThresholds[1]
         
         thisMask = createSimpleThresholdMask(clipThresholds[0], 0, lowerThreshold = clipThresholds[1])
-        thisGenerator = tpg.Gaussian(parameters)
+        thisGenerator = tpgg.Gaussian(parameters)
         
         data = thisGenerator.generate(numpy.arange(0, self._numberSamples))
         
@@ -54,7 +55,7 @@ class TestGenerator (unittest.TestCase):
         
     def testGeneratePredefined1 (self):
         pdvData = numpy.random.normal(1, 3, self._numberSamples)
-        thisGenerator = tpg.Predefined(pdvData)
+        thisGenerator = tpgg.Predefined(pdvData)
 
         timebase = numpy.arange(0, 100)
         
@@ -65,7 +66,7 @@ class TestGenerator (unittest.TestCase):
         
     def testGeneratePredefined2 (self):
         pdvData = numpy.random.normal(1, 3, self._numberSamples)
-        thisGenerator = tpg.Predefined(pdvData)
+        thisGenerator = tpgg.Predefined(pdvData)
 
         timebase = numpy.arange(0, (self._numberSamples + 100))
         
@@ -78,7 +79,7 @@ class TestGenerator (unittest.TestCase):
         
     def testGeneratePredefined3 (self):
         pdvData = numpy.random.normal(1, 3, self._numberSamples)
-        thisGenerator = tpg.Predefined(pdvData)
+        thisGenerator = tpgg.Predefined(pdvData)
 
         timebase1 = numpy.arange(0, math.floor(self._numberSamples / 3))
         timebase2 = numpy.arange(0, self._numberSamples) + len(timebase1)
@@ -97,12 +98,12 @@ class TestGenerator (unittest.TestCase):
     def testGenerateUniform1 (self):
         clipThresholds = ( 9, 1 )
         
-        parameters = tpg.UniformParameters()
+        parameters = tpgp.UniformParameters()
         parameters.upperThreshold = clipThresholds[0]
         parameters.lowerThreshold = clipThresholds[1]
         
         thisMask = createSimpleThresholdMask(clipThresholds[0], 0, lowerThreshold = clipThresholds[1])
-        thisGenerator = tpg.Uniform(parameters)
+        thisGenerator = tpgg.Uniform(parameters)
         
         data = thisGenerator.generate(numpy.arange(0, self._numberSamples))
         
@@ -114,13 +115,13 @@ class TestGenerator (unittest.TestCase):
     def testGenerateExponential1 (self):
         clipThreshold = 9
         
-        parameters = tpg.ExponentialParameters()
+        parameters = tpgp.ExponentialParameters()
         parameters.offset = 2
         parameters.scale = 3
         parameters.upperThreshold = clipThreshold
         
         thisMask = createSimpleThresholdMask(clipThreshold, 0, lowerThreshold = parameters.offset)
-        thisGenerator = tpg.Exponential(parameters)
+        thisGenerator = tpgg.Exponential(parameters)
         
         data = thisGenerator.generate(numpy.arange(0, self._numberSamples))
         
