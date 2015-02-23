@@ -15,6 +15,7 @@
     along with timeTools.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
+import matplotlib.pyplot as mpp
 import numpy
 import unittest
 
@@ -31,7 +32,7 @@ class TestVisualization(unittest.TestCase):
         signalValues = numpy.random.normal(0.0, 10.0, numberSamples)
         thisSignal = (signalBaseline, signalValues)
         
-        thisMask = complianceAnalysis.Mask([( [10.0], [-5.0], [0.0, 10.0] ), ( [0.0, 1.0], [5.0, -1.0], [10, 20] )])
+        thisMask = complianceAnalysis.Mask([( [0.0, 10.0], [10.0], [-5.0] ), ( [10, 20], [0.0, 1.0], [5.0, -1.0] )])
         
         thisPlot = complianceVisualization.plot()
         
@@ -41,6 +42,8 @@ class TestVisualization(unittest.TestCase):
         thisPlot.go()
         
         maskResult = thisMask.evaluate(thisSignal)
+        
+        mpp.title('testVisualization1')
         
         self.assertFalse(maskResult, 'testVisualization (1) failed mask evaluation')
         
@@ -53,7 +56,7 @@ class TestVisualization(unittest.TestCase):
         thisSignal = (signalBaseline, signalValues)
         
         # Test that this mask is plotted correctly (a horizontal line for any length of signal).
-        thisMask = complianceAnalysis.Mask([( [10.0], [0.0] )])
+        thisMask = complianceAnalysis.Mask([( [0.0], [10.0] )])
         
         thisPlot = complianceVisualization.plot()
         
@@ -61,6 +64,13 @@ class TestVisualization(unittest.TestCase):
         thisPlot.addSignal(thisSignal)
         
         thisPlot.go()
+        
+        mpp.title('testVisualization2')
+
+
+    def __del__ (self):
+        if __name__ == "__main__":
+            mpp.show()
     
 
 if __name__ == "__main__":

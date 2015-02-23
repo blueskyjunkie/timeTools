@@ -101,26 +101,73 @@ class Mask:
     
     def _validateIntervalSet(self):
         # An intervalSet is a list of tuples
-        # An interval is a tuple of size 2 or 3
-        #   * A size 2 tuple implies a single upper bound is specified such that 
-        #       signal <= upper bound => pass
-        #   * A size 3 tuple implies an upper and lower bound is specified such that
-        #       lower bound <= signal <= upper bound => pass
         # Intervals cannot overlap
-        # Intervals must be piecewise continuous
-        pass
+        
+        # Python is usually duck typed (if it walks like a duck and quacks like a duck...).
+        # In this case we are using the sequence of lists and tuples to encode the type of
+        # interval information being used so strict typing is applied instead.
+        assert(isinstance(self._intervalSet, list))
+        for interval in self._intervalSet:
+            # An interval is a tuple of size 2 or 3
+            #   * A size 2 tuple implies a single upper bound is specified such that 
+            #       signal <= upper bound =>(implies) pass
+            #   * A size 3 tuple implies an upper and lower bound is specified such that
+            #       lower bound <= signal <= upper bound =>(implies) pass
+            assert(isinstance(interval, tuple))
+            assert((len(interval) == 2) or (len(interval) == 3))
+            
+            # The first element must be a list of size 1 or 2 indicating the x-axis bounds
+            # of the interval.
+            assert(isinstance(interval[0], list))
+            assert((len(interval[0])) == 1 or (len(interval[0]) == 2))
+                
+            # If the second element is a tuple then must contain two lists 
+            # describing the factors and powers of an arbitrary polynomial.
+            if isinstance(interval[1], tuple):
+                assert(len(interval[1]) == 2)
+                assert(isinstance(interval[1][0], list))
+                assert(isinstance(interval[1][1], list))
+                assert(len(interval[1][0]) == len(interval[1][1]))
+            
+            elif not isinstance(interval[1], list):
+                # If the second element is a list then it must be a simple 
+                # polynomial of integer powers describing the shape of the bound.
+                assert(isinstance(interval[1], list))
+                
+                
+    def _evaluateBound (self, intervalBound, signalBaseline):
+        
+        def applyPowers (inputData, factorsPowers):
+            outputData = numpy.zeros(inputData.size)
+            for factor, power in zip(factorsPowers[0], factorsPowers[1]):
+                thisOutput = factor * numpy.power(inputData, power)
+                
+                outputData += thisOutput
+                
+            return outputData
+        
+        baselineBound = None
+        if isinstance(intervalBound, list):
+            baselineBound = polynomial.polyval(signalBaseline, intervalBound)
+        elif isinstance(intervalBound, tuple):
+            baselineBound = applyPowers(signalBaseline, intervalBound)
+        else:
+            raise ValidationException('Bad type for interval bound')
+        
+        return baselineBound
     
     
     def _evaluateUpperBound (self, interval, signal):
+                
         signalBaseline = signal[0]
         signalValues = signal[1]
             
-        intervalBound = interval[0]
-        baselineInterval = interval[1]
+        baselineInterval = interval[0]
+        intervalBound = interval[1]
         
         baselineIndex = self._evaluateInterval(baselineInterval, signalBaseline)
-            
-        baselineBound = polynomial.polyval(signalBaseline[baselineIndex], intervalBound)
+        
+        baselineBound = self._evaluateBound(intervalBound, signalBaseline[baselineIndex])
             
         return not any(signalValues[baselineIndex] > baselineBound)
     
@@ -129,14 +176,14 @@ class Mask:
         signalBaseline = signal[0]
         signalValues = signal[1]
             
-        upperIntervalBound = interval[0]
-        lowerIntervalBound = interval[1]
-        baselineInterval = interval[2]
+        baselineInterval = interval[0]
+        upperIntervalBound = interval[1]
+        lowerIntervalBound = interval[2]
     
         baselineIndex = self._evaluateInterval(baselineInterval, signalBaseline)
         
-        upperBaselineBound = polynomial.polyval(signalBaseline[baselineIndex], upperIntervalBound)
-        lowerBaselineBound = polynomial.polyval(signalBaseline[baselineIndex], lowerIntervalBound)
+        upperBaselineBound = self._evaluateBound(upperIntervalBound, signalBaseline[baselineIndex])
+        lowerBaselineBound = self._evaluateBound(lowerIntervalBound, signalBaseline[baselineIndex])
             
         return not (any(signalValues[baselineIndex] > upperBaselineBound) or any(signalValues[baselineIndex] < lowerBaselineBound))
     
@@ -165,8 +212,8 @@ class Mask:
     def _plotIntervalUpperBound (self, interval, kwargs):
         assert(len(interval) == 2)
         
-        upperIntervalBoundCoefficients = interval[0]
-        baselineInterval = interval[1]
+        baselineInterval = interval[0]
+        upperIntervalBoundCoefficients = interval[1]
         
         self._plotIntervalBound(baselineInterval, upperIntervalBoundCoefficients, kwargs)
     
@@ -175,9 +222,9 @@ class Mask:
         # Assume the current figure is the correct one
         assert(len(interval) == 3)
         
-        upperIntervalBoundCoefficients = interval[0]
-        lowerIntervalBoundCoefficients = interval[1]
-        baselineInterval = interval[2]
+        baselineInterval = interval[0]
+        upperIntervalBoundCoefficients = interval[1]
+        lowerIntervalBoundCoefficients = interval[2]
         
         self._plotIntervalBound(baselineInterval, upperIntervalBoundCoefficients, kwargs)
         self._plotIntervalBound(baselineInterval, lowerIntervalBoundCoefficients, kwargs)
@@ -186,12 +233,21 @@ class Mask:
     def _plotIntervalBound (self, baselineInterval, intervalBoundCoefficients, kwargs):
         assert((len(baselineInterval) == 1) or (len(baselineInterval) == 2))
         
-        numberPoints = max([2, (2 * (2 * (len(intervalBoundCoefficients) - 1)))])
+        numberPoints = None
+        if isinstance(intervalBoundCoefficients, list):
+            numberPoints = max([2, (2 * (2 * (len(intervalBoundCoefficients) - 1)))])
+        elif isinstance(intervalBoundCoefficients, tuple):
+            # This is necessarily a bit more complicated because the polynomial 
+            # may now be of arbitrary powers, including fractional powers.
+            order = max([ max(intervalBoundCoefficients[1]), max(1 / numpy.array(intervalBoundCoefficients[1])) ])
+            numberPoints = max([2, (2 * (2 * order))])
+        else:
+            raise ValidationException('Incorrect type of interval elements, ' + repr(len(baselineInterval)))
         
         xLimits = self._getPlotIntervalXlimits(baselineInterval)
         
         xData = numpy.linspace(xLimits[0], xLimits[1], numberPoints)
-        yData = polynomial.polyval(xData, intervalBoundCoefficients)
+        yData = self._evaluateBound(intervalBoundCoefficients, xData)
         
         # Assume the current figure is the correct one
         if not kwargs:
