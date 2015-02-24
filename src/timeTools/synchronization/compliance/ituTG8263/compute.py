@@ -16,7 +16,7 @@
 '''
 
 import timeTools.synchronization.analysis.fastMtie as tsam
-import timeTools.synchronization.compliance.ituTG8263.masks as tscg8263m
+import timeTools.synchronization.compliance.ituTG8263.wanderGeneration as tscg8263wg
 
 
 def analyzeItuTG8263Mask (localTimeSeconds, referenceTimeSeconds, samplingIntervalSeconds, desiredNumberObservations):
@@ -27,6 +27,6 @@ def analyzeItuTG8263Mask (localTimeSeconds, referenceTimeSeconds, samplingInterv
     
     mtieNanoseconds = mtieSeconds / 1e-9
     
-    analysisResult = tscg8263m.wanderGenerationConstantTemperatureNs.evaluate( (observationIntervalsSeconds, mtieNanoseconds) )
+    analysisResult = tscg8263wg.constantTemperatureNs.evaluate( (observationIntervalsSeconds, mtieNanoseconds) )
     
-    return analysisResult, tscg8263m.wanderGenerationConstantTemperatureNs, (observationIntervalsSeconds, mtieNanoseconds)
+    return analysisResult, tscg8263wg.constantTemperatureNs, (observationIntervalsSeconds, mtieNanoseconds)
