@@ -90,6 +90,20 @@ class TestAnalysis(unittest.TestCase):
         self.assertFalse(thisMask.evaluate(signal), 'Mask (6) bound test failed')
 
 
+    def testMask7 (self):
+        thisMask = sca.Mask([( [0.0, 10.0], ([5, 10.0], [0, 0.5]) )])
+        
+        # The signal >= the mask bound on the upper bound side so the evaluation should fail
+        signal = (numpy.arange(0.0, 12.0), numpy.arange(0.0, 12.0) + 10)
+        
+        figureHandle = mpp.figure()
+        thisMask.addToPlot(figureHandle.number)
+        mpp.plot(signal[0], signal[1], color='r')
+        mpp.title('testMask7')
+        
+        self.assertFalse(thisMask.evaluate(signal), 'Mask (7) bound test failed')
+
+
     def testPlotMask1 (self):
         thisMask = sca.Mask([( [0.0, 10.0], [10.0] ), ( [10, 20], [0.0, 1.0] ), ( [20.0, 30.0], [20.0] ), ( [30.0, 40.0], [170, -8.0, 0.1] )])
         

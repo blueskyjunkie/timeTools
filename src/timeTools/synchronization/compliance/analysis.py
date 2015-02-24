@@ -239,7 +239,10 @@ class Mask:
         elif isinstance(intervalBoundCoefficients, tuple):
             # This is necessarily a bit more complicated because the polynomial 
             # may now be of arbitrary powers, including fractional powers.
-            order = max([ max(intervalBoundCoefficients[1]), max(1 / numpy.array(intervalBoundCoefficients[1])) ])
+            powers = numpy.abs(numpy.array(intervalBoundCoefficients[1]))
+            
+            order = max([ max(powers[powers > 0]), max(1 / powers[powers > 0]) ])
+            assert(order >= 1)
             numberPoints = max([2, (2 * (2 * order))])
         else:
             raise ValidationException('Incorrect type of interval elements, ' + repr(len(baselineInterval)))
