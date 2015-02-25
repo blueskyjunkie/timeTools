@@ -20,11 +20,12 @@ import unittest
 
 import timeTools.synchronization.compliance.ituTG8262.eecOption1.wanderGeneration as tscg8262eec1wg
 import timeTools.synchronization.compliance.ituTG8262.eecOption1.wanderTolerance as tscg8262eec1wt
+import timeTools.synchronization.compliance.ituTG8262.eecOption2.wanderGeneration as tscg8262eec2wg
 
 
-class TestItuTG8262 (unittest.TestCase): 
+class TestItuTG8262 (unittest.TestCase):
 
-    def testMtieConstantTemperatureG8262WanderGenerationMask (self):
+    def testEec1MtieConstantTemperatureG8262WanderGenerationMask (self):
         thisMask = tscg8262eec1wg.mtieConstantTemperatureNs
           
         figureHandle = mpp.figure()
@@ -37,10 +38,10 @@ class TestItuTG8262 (unittest.TestCase):
         mpp.yscale('log')
         mpp.xscale('log')
         mpp.grid(which='minor')
-        mpp.title('testMtieConstantTemperatureG8262WanderGenerationMask')
+        mpp.title('testEec1MtieConstantTemperatureG8262WanderGenerationMask')
          
  
-    def testMtieVariableTemperatureG8262WanderGenerationMask (self):
+    def testEec1MtieVariableTemperatureG8262WanderGenerationMask (self):
         constantTempMask = tscg8262eec1wg.mtieConstantTemperatureNs
         thisMask = tscg8262eec1wg.mtieTemperatureNs
          
@@ -55,10 +56,10 @@ class TestItuTG8262 (unittest.TestCase):
         mpp.yscale('log')
         mpp.xscale('log')
         mpp.grid(which='minor')
-        mpp.title('testMtieVariableTemperatureG8262WanderGenerationMask')
+        mpp.title('testEec1MtieVariableTemperatureG8262WanderGenerationMask')
         
 
-    def testTdevConstantTemperatureG8262WanderGenerationMask (self):
+    def testEec1TdevConstantTemperatureG8262WanderGenerationMask (self):
         thisMask = tscg8262eec1wg.tdevConstantTemperatureNs
         
         figureHandle = mpp.figure()
@@ -71,10 +72,10 @@ class TestItuTG8262 (unittest.TestCase):
         mpp.yscale('log')
         mpp.xscale('log')
         mpp.grid(which='minor')
-        mpp.title('testTdevConstantTemperatureG8262WanderGenerationMask')
+        mpp.title('testEec1TdevConstantTemperatureG8262WanderGenerationMask')
         
 
-    def testMtieConstantTemperatureG8262WanderToleranceMask (self):
+    def testEec1MtieConstantTemperatureG8262WanderToleranceMask (self):
         thisMask = tscg8262eec1wt.mtieMicroseconds
         
         figureHandle = mpp.figure()
@@ -87,10 +88,10 @@ class TestItuTG8262 (unittest.TestCase):
         mpp.yscale('log')
         mpp.xscale('log')
         mpp.grid(which='minor')
-        mpp.title('testMtieConstantTemperatureG8262WanderToleranceMask')
+        mpp.title('testEec1MtieConstantTemperatureG8262WanderToleranceMask')
         
 
-    def testTdevConstantTemperatureG8262WanderToleranceMask (self):
+    def testEec1TdevConstantTemperatureG8262WanderToleranceMask (self):
         thisMask = tscg8262eec1wt.tdevNs
         
         figureHandle = mpp.figure()
@@ -103,7 +104,39 @@ class TestItuTG8262 (unittest.TestCase):
         mpp.yscale('log')
         mpp.xscale('log')
         mpp.grid(which='minor')
-        mpp.title('testTdevConstantTemperatureG8262WanderToleranceMask')
+        mpp.title('testEec1TdevConstantTemperatureG8262WanderToleranceMask')
+        
+
+    def testEec2MtieConstantTemperatureG8262WanderGenerationMask (self):
+        thisMask = tscg8262eec2wg.mtieConstantTemperatureNs
+          
+        figureHandle = mpp.figure()
+        # Set the plot limits before the mask plot so that it will figure out 
+        # appropriate ranges in the absence of signal data
+        mpp.xlim( (0.01, 1000) )
+        mpp.ylim( (1, 1000) )
+        thisMask.addToPlot(figureHandle.number)
+          
+        mpp.yscale('log')
+        mpp.xscale('log')
+        mpp.grid(which='minor')
+        mpp.title('testEec2MtieConstantTemperatureG8262WanderGenerationMask')
+        
+
+    def testEec2TdevConstantTemperatureG8262WanderGenerationMask (self):
+        thisMask = tscg8262eec2wg.tdevConstantTemperatureNs
+        
+        figureHandle = mpp.figure()
+        # Set the plot limits before the mask plot so that it will figure out 
+        # appropriate ranges in the absence of signal data
+        mpp.xlim( (0.1, 1000) )
+        mpp.ylim( (0.1, 100) )
+        thisMask.addToPlot(figureHandle.number, linewidth=3, color='r')
+        
+        mpp.yscale('log')
+        mpp.xscale('log')
+        mpp.grid(which='minor')
+        mpp.title('testEec2TdevConstantTemperatureG8262WanderGenerationMask')
 
 
     def tearDown (self):
