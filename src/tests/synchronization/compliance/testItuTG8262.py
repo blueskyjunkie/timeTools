@@ -23,6 +23,7 @@ import timeTools.synchronization.compliance.ituTG8262.eecOption1.wanderTolerance
 import timeTools.synchronization.compliance.ituTG8262.eecOption2.wanderGeneration as tscg8262eec2wg
 import timeTools.synchronization.compliance.ituTG8262.eecOption2.wanderTolerance as tscg8262eec2wt
 import timeTools.synchronization.compliance.ituTG8262.jitterTolerance as tscg8262jt
+import timeTools.synchronization.compliance.ituTG8262.eecOption2.wanderTransfer as tscg8262eec2wtf
 
 
 class TestItuTG8262 (unittest.TestCase):
@@ -187,6 +188,22 @@ class TestItuTG8262 (unittest.TestCase):
         mpp.xscale('log')
         mpp.grid(which='minor')
         mpp.title('testG8262JitterTolerance10GMask')
+        
+
+    def testEec2TdevG8262WanderTransferMask (self):
+        thisMask = tscg8262eec2wtf.tdevNs
+        
+        figureHandle = mpp.figure()
+        # Set the plot limits before the mask plot so that it will figure out 
+        # appropriate ranges in the absence of signal data
+        mpp.xlim( (0.1, 1000) )
+        mpp.ylim( (1, 1000) )
+        thisMask.addToPlot(figureHandle.number, linewidth=3, color='r')
+        
+        mpp.yscale('log')
+        mpp.xscale('log')
+        mpp.grid(which='minor')
+        mpp.title('testEec2TdevG8262WanderTransferMask')
 
 
     def tearDown (self):
