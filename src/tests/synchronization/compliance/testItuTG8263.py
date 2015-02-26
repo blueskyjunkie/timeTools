@@ -173,7 +173,7 @@ class TestItuTG8263 (unittest.TestCase):
         self.assertFalse(analysisResult, 'Passed 16 ppb mask when should not have')
 
 
-    def __del__ (self):
+    def tearDown (self):
         if __name__ == "__main__":
             mpp.show()
 
