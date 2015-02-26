@@ -43,7 +43,7 @@ class TestItuTG8263 (unittest.TestCase):
         mpp.yscale('log')
         mpp.xscale('log')
         mpp.grid(which='minor')
-        mpp.title('testConstantTemperatureWanderGenerationMask')
+        mpp.title(self.testConstantTemperatureWanderGenerationMask.__name__)
         
     
     def testVariableTemperatureWanderGenerationMask (self):
@@ -61,14 +61,14 @@ class TestItuTG8263 (unittest.TestCase):
         mpp.yscale('log')
         mpp.xscale('log')
         mpp.grid(which='minor')
-        mpp.title('testVariableTemperatureWanderGenerationMask')
+        mpp.title(self.testVariableTemperatureWanderGenerationMask.__name__)
         
     
     def testHoldoverTransientPhaseErrorMask (self):
         thisMask = tscg8263h.phaseErrorNs
         
         figureHandle = mpp.figure()
-        mpp.title('testHoldoverTransientPhaseErrorMask')
+        mpp.title(self.testHoldoverTransientPhaseErrorMask.__name__)
         # Set the plot limits before the mask plot so that it will figure out 
         # appropriate ranges in the absence of signal data
         mpp.xlim( (0, 100) )
@@ -83,7 +83,7 @@ class TestItuTG8263 (unittest.TestCase):
         thisMask = tscg8263h.ffoPpb
         
         figureHandle = mpp.figure()
-        mpp.title('testHoldoverTransientFfoMask')
+        mpp.title(self.testHoldoverTransientFfoMask.__name__)
         # Set the plot limits before the mask plot so that it will figure out 
         # appropriate ranges in the absence of signal data
         mpp.xlim( (0, 24*3600) )
@@ -98,7 +98,7 @@ class TestItuTG8263 (unittest.TestCase):
         thisMask = tscg8263h.ffoRatePpbPerSecond
         
         figureHandle = mpp.figure()
-        mpp.title('testHoldoverTransientFfoRateMask')
+        mpp.title(self.testHoldoverTransientFfoRateMask.__name__)
         # Set the plot limits before the mask plot so that it will figure out 
         # appropriate ranges in the absence of signal data
         mpp.xlim( (0, 3600) )
@@ -136,7 +136,7 @@ class TestItuTG8263 (unittest.TestCase):
         mpp.yscale('log')
         mpp.xscale('log')
         mpp.grid(which='minor')
-        mpp.title('testWanderGenerationConstantTemperatureNs1')
+        mpp.title(self.testWanderGenerationConstantTemperatureNs1.__name__)
         
         self.assertTrue(analysisResult, 'Failed 16 ppb mask when should not have')
 
@@ -168,7 +168,7 @@ class TestItuTG8263 (unittest.TestCase):
         mpp.yscale('log')
         mpp.xscale('log')
         mpp.grid(which='minor')
-        mpp.title('testWanderGenerationConstantTemperatureNs2')
+        mpp.title(self.testWanderGenerationConstantTemperatureNs2.__name__)
         
         self.assertFalse(analysisResult, 'Passed 16 ppb mask when should not have')
 

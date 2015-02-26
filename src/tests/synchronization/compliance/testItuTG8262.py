@@ -33,7 +33,7 @@ class TestItuTG8262 (unittest.TestCase):
         thisMask = tscg8262eec1wg.mtieConstantTemperatureNs
           
         figureHandle = mpp.figure()
-        mpp.title('testEec1MtieConstantTemperatureG8262WanderGenerationMask')
+        mpp.title(self.testEec1MtieConstantTemperatureG8262WanderGenerationMask.__name__)
         # Set the plot limits before the mask plot so that it will figure out 
         # appropriate ranges in the absence of signal data
         mpp.xlim( (0.01, 1000) )
@@ -50,7 +50,7 @@ class TestItuTG8262 (unittest.TestCase):
         thisMask = tscg8262eec1wg.mtieTemperatureNs
          
         figureHandle = mpp.figure()
-        mpp.title('testEec1MtieVariableTemperatureG8262WanderGenerationMask')
+        mpp.title(self.testEec1MtieVariableTemperatureG8262WanderGenerationMask.__name__)
         # Set the plot limits before the mask plot so that it will figure out 
         # appropriate ranges in the absence of signal data
         mpp.xlim( (0.1, 1000) )
@@ -67,7 +67,7 @@ class TestItuTG8262 (unittest.TestCase):
         thisMask = tscg8262eec1wg.tdevConstantTemperatureNs
         
         figureHandle = mpp.figure()
-        mpp.title('testEec1TdevConstantTemperatureG8262WanderGenerationMask')
+        mpp.title(self.testEec1TdevConstantTemperatureG8262WanderGenerationMask.__name__)
         # Set the plot limits before the mask plot so that it will figure out 
         # appropriate ranges in the absence of signal data
         mpp.xlim( (0.1, 1000) )
@@ -83,7 +83,7 @@ class TestItuTG8262 (unittest.TestCase):
         thisMask = tscg8262eec1wt.mtieMicroseconds
         
         figureHandle = mpp.figure()
-        mpp.title('testEec1MtieConstantTemperatureG8262WanderToleranceMask')
+        mpp.title(self.testEec1MtieConstantTemperatureG8262WanderToleranceMask.__name__)
         # Set the plot limits before the mask plot so that it will figure out 
         # appropriate ranges in the absence of signal data
         mpp.xlim( (0.1, 1000) )
@@ -99,7 +99,7 @@ class TestItuTG8262 (unittest.TestCase):
         thisMask = tscg8262eec1wt.tdevNs
         
         figureHandle = mpp.figure()
-        mpp.title('testEec1TdevConstantTemperatureG8262WanderToleranceMask')
+        mpp.title(self.testEec1TdevConstantTemperatureG8262WanderToleranceMask.__name__)
         # Set the plot limits before the mask plot so that it will figure out 
         # appropriate ranges in the absence of signal data
         mpp.xlim( (0.1, 1000) )
@@ -115,7 +115,7 @@ class TestItuTG8262 (unittest.TestCase):
         thisMask = tscg8262eec2wg.mtieConstantTemperatureNs
           
         figureHandle = mpp.figure()
-        mpp.title('testEec2MtieConstantTemperatureG8262WanderGenerationMask')
+        mpp.title(self.testEec2MtieConstantTemperatureG8262WanderGenerationMask.__name__)
         # Set the plot limits before the mask plot so that it will figure out 
         # appropriate ranges in the absence of signal data
         mpp.xlim( (0.01, 1000) )
@@ -131,7 +131,7 @@ class TestItuTG8262 (unittest.TestCase):
         thisMask = tscg8262eec2wg.tdevConstantTemperatureNs
         
         figureHandle = mpp.figure()
-        mpp.title('testEec2TdevConstantTemperatureG8262WanderGenerationMask')
+        mpp.title(self.testEec2TdevConstantTemperatureG8262WanderGenerationMask.__name__)
         # Set the plot limits before the mask plot so that it will figure out 
         # appropriate ranges in the absence of signal data
         mpp.xlim( (0.1, 1000) )
@@ -147,7 +147,7 @@ class TestItuTG8262 (unittest.TestCase):
         thisMask = tscg8262eec2wt.tdevNs
         
         figureHandle = mpp.figure()
-        mpp.title('testEec2TdevG8262WanderToleranceMask')
+        mpp.title(self.testEec2TdevG8262WanderToleranceMask.__name__)
         # Set the plot limits before the mask plot so that it will figure out 
         # appropriate ranges in the absence of signal data
         mpp.xlim( (0.1, 1000) )
@@ -163,7 +163,7 @@ class TestItuTG8262 (unittest.TestCase):
         thisMask = tscg8262jt.jitterAmplitude1G
         
         figureHandle = mpp.figure()
-        mpp.title('testG8262JitterTolerance1GMask')
+        mpp.title(self.testG8262JitterTolerance1GMask.__name__)
         # Set the plot limits before the mask plot so that it will figure out 
         # appropriate ranges in the absence of signal data
         mpp.xlim( (10, 1000000) )
@@ -179,7 +179,7 @@ class TestItuTG8262 (unittest.TestCase):
         thisMask = tscg8262jt.jitterAmplitude10G
         
         figureHandle = mpp.figure()
-        mpp.title('testG8262JitterTolerance10GMask')
+        mpp.title(self.testG8262JitterTolerance10GMask.__name__)
         # Set the plot limits before the mask plot so that it will figure out 
         # appropriate ranges in the absence of signal data
         mpp.xlim( (10, 1000000) )
@@ -195,7 +195,7 @@ class TestItuTG8262 (unittest.TestCase):
         thisMask = tscg8262eec2wtf.tdevNs
         
         figureHandle = mpp.figure()
-        mpp.title('testEec2TdevG8262WanderTransferMask')
+        mpp.title(self.testEec2TdevG8262WanderTransferMask.__name__)
         # Set the plot limits before the mask plot so that it will figure out 
         # appropriate ranges in the absence of signal data
         mpp.xlim( (0.1, 1000) )
@@ -211,7 +211,7 @@ class TestItuTG8262 (unittest.TestCase):
         thisMask = tscg8262eec2t.transientMtieNs
           
         figureHandle = mpp.figure()
-        mpp.title('testEec2MtieTransientMask')
+        mpp.title(self.testEec2MtieTransientMask.__name__)
         # Set the plot limits before the mask plot so that it will figure out 
         # appropriate ranges in the absence of signal data
         mpp.xlim( (0.014, 10) )
