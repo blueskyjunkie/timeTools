@@ -145,7 +145,7 @@ class TestAnalysis(unittest.TestCase):
         mpp.ylim( (0, 30) )
 
 
-    def __del__ (self):
+    def tearDown (self):
         if __name__ == "__main__":
             mpp.show()
         
