@@ -24,6 +24,11 @@ import timeTools.synchronization.compliance.analysis as sca
 
 class TestAnalysis(unittest.TestCase):
     
+    def testMask0 (self):
+        # There should be no exceptions from this call
+        thisMask = sca.Mask([])
+        
+    
     def testMask1 (self):
         thisMask = sca.Mask([( [0.0], [10.0] )])
         
