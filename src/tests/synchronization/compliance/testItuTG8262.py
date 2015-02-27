@@ -25,6 +25,8 @@ import timeTools.synchronization.compliance.ituTG8262.eecOption2.wanderTolerance
 import timeTools.synchronization.compliance.ituTG8262.jitterTolerance as tscg8262jt
 import timeTools.synchronization.compliance.ituTG8262.eecOption2.wanderTransfer as tscg8262eec2wtf
 import timeTools.synchronization.compliance.ituTG8262.eecOption2.transient as tscg8262eec2t
+import timeTools.synchronization.compliance.ituTG8262.eecOption1.holdover as tscg8262eec1h
+import timeTools.synchronization.compliance.ituTG8262.eecOption2.holdover as tscg8262eec2h
 
 
 class TestItuTG8262 (unittest.TestCase):
@@ -221,6 +223,34 @@ class TestItuTG8262 (unittest.TestCase):
         mpp.yscale('log')
         mpp.xscale('log')
         mpp.grid(which='minor')
+        
+
+    def testEec1HoldoverPhaseErrorMask (self):
+        thisMask = tscg8262eec1h.phaseErrorNs
+          
+        figureHandle = mpp.figure()
+        mpp.title(self.testEec1HoldoverPhaseErrorMask.__name__)
+        # Set the plot limits before the mask plot so that it will figure out 
+        # appropriate ranges in the absence of signal data
+        mpp.xlim( (0.01, 10000) )
+        mpp.ylim( (-10e6, 10e6) )
+        thisMask.addToPlot(figureHandle.number)
+          
+        mpp.grid()
+        
+
+    def testEec2HoldoverPhaseErrorMask (self):
+        thisMask = tscg8262eec2h.phaseErrorNs
+          
+        figureHandle = mpp.figure()
+        mpp.title(self.testEec2HoldoverPhaseErrorMask.__name__)
+        # Set the plot limits before the mask plot so that it will figure out 
+        # appropriate ranges in the absence of signal data
+        mpp.xlim( (0.01, 10000) )
+        mpp.ylim( (-10e6, 10e6) )
+        thisMask.addToPlot(figureHandle.number)
+          
+        mpp.grid()
 
 
     def tearDown (self):
