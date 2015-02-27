@@ -32,14 +32,14 @@ def createSimpleThresholdMask (threshold, start=0.0, stop=None, lowerThreshold=N
     thisMask = []
     if stop == None:
         if lowerThreshold == None:
-            thisMask = complianceAnalysis.Mask([( [threshold], [start] )])
+            thisMask = complianceAnalysis.Mask([( [start], [threshold] )])
         else:
-            thisMask = complianceAnalysis.Mask([( [threshold], [lowerThreshold], [start] )])
+            thisMask = complianceAnalysis.Mask([( [start], [threshold], [lowerThreshold] )])
             
     else:
         if lowerThreshold == None:
-            thisMask = complianceAnalysis.Mask([( [threshold], [start, stop] )])
+            thisMask = complianceAnalysis.Mask([( [start, stop], [threshold] )])
         else:
-            thisMask = complianceAnalysis.Mask([( [threshold], [lowerThreshold], [start, stop] )])
+            thisMask = complianceAnalysis.Mask([( [start, stop], [threshold], [lowerThreshold] )])
         
     return thisMask

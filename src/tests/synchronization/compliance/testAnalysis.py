@@ -25,7 +25,7 @@ import timeTools.synchronization.compliance.analysis as sca
 class TestAnalysis(unittest.TestCase):
     
     def testMask1 (self):
-        thisMask = sca.Mask([( [10.0], [0.0] )])
+        thisMask = sca.Mask([( [0.0], [10.0] )])
         
         # The signal exceeds the mask bound so the evaluation should fail
         signal = (numpy.arange(0.0, 12.0), numpy.arange(0.0, 12.0))
@@ -34,7 +34,7 @@ class TestAnalysis(unittest.TestCase):
         
         
     def testMask2 (self):
-        thisMask = sca.Mask([( [12.0], [0.0] )])
+        thisMask = sca.Mask([( [0.0], [12.0] )])
         
         # The signal is equal to the mask bounds so the evaluation should pass
         signal = (numpy.arange(0.0, 12.0), numpy.arange(0.0, 12.0))
@@ -43,7 +43,7 @@ class TestAnalysis(unittest.TestCase):
 
 
     def testMask3 (self):
-        thisMask = sca.Mask([( [10.0], [0.0, 10.0] )])
+        thisMask = sca.Mask([( [0.0, 10.0], [10.0] )])
         
         # The signal is <= the mask bound for the specified interval so the evaluation should pass
         signal = (numpy.arange(0.0, 12.0), numpy.arange(0.0, 12.0))
@@ -52,58 +52,102 @@ class TestAnalysis(unittest.TestCase):
 
 
     def testMask4 (self):
-        thisMask = sca.Mask([( [10.0], [-1.0], [0.0, 10.0] )])
+        thisMask = sca.Mask([( [0.0, 10.0], [10.0], [-1.0] )])
         
         # The signal >= the mask bound on the lower bound side and <= the mask bound on the 
         # upper bound side over the mask interval so the evaluation should pass
         signal = (numpy.arange(0.0, 12.0), numpy.arange(0.0, 12.0))
         
-        self.assertTrue(thisMask.evaluate(signal), 'Mask (3) bound test failed')
+        self.assertTrue(thisMask.evaluate(signal), 'Mask (4) bound test failed')
 
 
-    def testPlotMask1 (self):
-        thisMask = sca.Mask([( [10.0], [0.0, 10.0] ), ( [0.0, 1.0], [10, 20] ), ( [20.0], [20.0, 30.0] ), ( [170, -8.0, 0.1], [30.0, 40.0])])
+    def testMask5 (self):
+        thisMask = sca.Mask([( [0.0, 10.0], ([10.0], [0.5]) )])
+        
+        # The signal >= the mask bound on the lower bound side and <= the mask bound on the 
+        # upper bound side over the mask interval so the evaluation should pass
+        signal = (numpy.arange(0.0, 12.0), numpy.arange(0.0, 12.0))
         
         figureHandle = mpp.figure()
         thisMask.addToPlot(figureHandle.number)
+        mpp.plot(signal[0], signal[1], color='r')
+        mpp.title('testMask5')
         
-        axisHandle = mpp.gca()
+        self.assertTrue(thisMask.evaluate(signal), 'Mask (5) bound test failed')
+
+
+    def testMask6 (self):
+        thisMask = sca.Mask([( [0.0, 10.0], ([10.0], [0.5]) )])
         
-        axisHandle.set_ylim([0, 30])
+        # The signal >= the mask bound on the upper bound side so the evaluation should fail
+        signal = (numpy.arange(0.0, 12.0), numpy.arange(0.0, 12.0) + 10)
+        
+        figureHandle = mpp.figure()
+        thisMask.addToPlot(figureHandle.number)
+        mpp.plot(signal[0], signal[1], color='r')
+        mpp.title('testMask6')
+        
+        self.assertFalse(thisMask.evaluate(signal), 'Mask (6) bound test failed')
+
+
+    def testMask7 (self):
+        thisMask = sca.Mask([( [0.0, 10.0], ([5, 10.0], [0, 0.5]) )])
+        
+        # The signal >= the mask bound on the upper bound side so the evaluation should fail
+        signal = (numpy.arange(0.0, 12.0), numpy.arange(0.0, 12.0) + 10)
+        
+        figureHandle = mpp.figure()
+        thisMask.addToPlot(figureHandle.number)
+        mpp.plot(signal[0], signal[1], color='r')
+        mpp.title('testMask7')
+        
+        self.assertFalse(thisMask.evaluate(signal), 'Mask (7) bound test failed')
+
+
+    def testPlotMask1 (self):
+        thisMask = sca.Mask([( [0.0, 10.0], [10.0] ), ( [10, 20], [0.0, 1.0] ), ( [20.0, 30.0], [20.0] ), ( [30.0, 40.0], [170, -8.0, 0.1] )])
+        
+        figureHandle = mpp.figure()
+        thisMask.addToPlot(figureHandle.number)
+        mpp.title('testPlotMask1')
+        
+        mpp.ylim( (0, 30) )
 
 
     def testPlotMask2 (self):
-        thisMask = sca.Mask([( [10.0], [0.0, 10.0] ), ( [0.0, 1.0], [10, 20] ), ( [20.0], [20.0, 30.0] ), ( [170, -8.0, 0.1], [30.0, 40.0])])
+        thisMask = sca.Mask([( [0.0, 10.0], [10.0] ), ( [10, 20], [0.0, 1.0] ), ( [20.0, 30.0], [20.0] ), ( [30.0, 40.0], [170, -8.0, 0.1])])
         
         figureHandle = mpp.figure()
         # Test adding line properties
         thisMask.addToPlot(figureHandle.number, linewidth=3, linestyle='-', color='r')
+        mpp.title('testPlotMask2')
         
-        axisHandle = mpp.gca()
-        
-        axisHandle.set_ylim([0, 30])
+        mpp.ylim( (0, 30) )
 
 
     def testPlotMask3 (self):
-        thisMask = sca.Mask([( [10.0], [-5.0], [0.0, 10.0] ), ( [0.0, 1.0], [5.0, -1.0], [10, 20] )])
+        thisMask = sca.Mask([( [0.0, 10.0], [10.0], [-5.0] ), ( [10, 20], [0.0, 1.0], [5.0, -1.0] )])
         
         figureHandle = mpp.figure()
         thisMask.addToPlot(figureHandle.number)
+        mpp.title('testPlotMask3')
         
-        axisHandle = mpp.gca()
-        
-        axisHandle.set_ylim([-20, 30])
+        mpp.ylim( (-20, 30) )
 
 
     def testPlotMask4 (self):
-        thisMask = sca.Mask([( [10.0], [0.0] )])
+        thisMask = sca.Mask([( [0.0], [10.0] )])
         
         figureHandle = mpp.figure()
         thisMask.addToPlot(figureHandle.number)
+        mpp.title('testPlotMask4')
         
-        axisHandle = mpp.gca()
-        
-        axisHandle.set_ylim([0, 30])
+        mpp.ylim( (0, 30) )
+
+
+    def __del__ (self):
+        if __name__ == "__main__":
+            mpp.show()
         
 
 if __name__ == "__main__":
