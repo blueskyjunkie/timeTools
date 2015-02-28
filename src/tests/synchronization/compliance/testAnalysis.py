@@ -114,7 +114,7 @@ class TestAnalysis(unittest.TestCase):
         
         figureHandle = mpp.figure()
         thisMask.addToPlot(figureHandle.number)
-        mpp.title('testPlotMask1')
+        mpp.title(self.testPlotMask1.__name__)
         
         mpp.ylim( (0, 30) )
 
@@ -125,7 +125,7 @@ class TestAnalysis(unittest.TestCase):
         figureHandle = mpp.figure()
         # Test adding line properties
         thisMask.addToPlot(figureHandle.number, linewidth=3, linestyle='-', color='r')
-        mpp.title('testPlotMask2')
+        mpp.title(self.testPlotMask2.__name__)
         
         mpp.ylim( (0, 30) )
 
@@ -135,7 +135,7 @@ class TestAnalysis(unittest.TestCase):
         
         figureHandle = mpp.figure()
         thisMask.addToPlot(figureHandle.number)
-        mpp.title('testPlotMask3')
+        mpp.title(self.testPlotMask3.__name__)
         
         mpp.ylim( (-20, 30) )
 
@@ -145,7 +145,7 @@ class TestAnalysis(unittest.TestCase):
         
         figureHandle = mpp.figure()
         thisMask.addToPlot(figureHandle.number)
-        mpp.title('testPlotMask4')
+        mpp.title(self.testPlotMask4.__name__)
         
         mpp.ylim( (0, 30) )
 
