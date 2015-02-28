@@ -251,6 +251,22 @@ class TestItuTG8262 (unittest.TestCase):
         thisMask.addToPlot(figureHandle.number)
           
         mpp.grid()
+        
+        
+    def testEec1SinusoidalWanderMask (self):
+        thisMask = tscg8262eec1wt.generateSinusoidalMask()
+          
+        figureHandle = mpp.figure()
+        mpp.title(self.testEec1SinusoidalWanderMask.__name__)
+        # Set the plot limits before the mask plot so that it will figure out 
+        # appropriate ranges in the absence of signal data
+        mpp.xlim( (0.1e-3, 10) )
+        mpp.ylim( (0.1, 6) )
+        thisMask.addToPlot(figureHandle.number)
+          
+        mpp.xscale('log')
+        mpp.yscale('log')
+        mpp.grid(which='minor')
 
 
     def tearDown (self):
