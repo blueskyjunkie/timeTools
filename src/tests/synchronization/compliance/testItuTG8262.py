@@ -27,6 +27,7 @@ import timeTools.synchronization.compliance.ituTG8262.eecOption2.wanderTransfer 
 import timeTools.synchronization.compliance.ituTG8262.eecOption2.transient as tscg8262eec2t
 import timeTools.synchronization.compliance.ituTG8262.eecOption1.holdover as tscg8262eec1h
 import timeTools.synchronization.compliance.ituTG8262.eecOption2.holdover as tscg8262eec2h
+import timeTools.synchronization.compliance.ituTG8262.eecOption2.noiseTransfer as tscg8262eec2nt
 
 
 class TestItuTG8262 (unittest.TestCase):
@@ -136,7 +137,7 @@ class TestItuTG8262 (unittest.TestCase):
         mpp.title(self.testEec2TdevConstantTemperatureG8262WanderGenerationMask.__name__)
         # Set the plot limits before the mask plot so that it will figure out 
         # appropriate ranges in the absence of signal data
-        mpp.xlim( (0.1, 1000) )
+        mpp.xlim( (0.1, 10000) )
         mpp.ylim( (0.1, 100) )
         thisMask.addToPlot(figureHandle.number, linewidth=3, color='r')
         
@@ -266,6 +267,22 @@ class TestItuTG8262 (unittest.TestCase):
           
         mpp.xscale('log')
         mpp.yscale('log')
+        mpp.grid(which='minor')
+        
+
+    def testEec2TdevNoiseTransferMask (self):
+        thisMask = tscg8262eec2nt.tdevNs
+        
+        figureHandle = mpp.figure()
+        mpp.title(self.testEec2TdevNoiseTransferMask.__name__)
+        # Set the plot limits before the mask plot so that it will figure out 
+        # appropriate ranges in the absence of signal data
+        mpp.xlim( (0.1, 1000) )
+        mpp.ylim( (1, 10000) )
+        thisMask.addToPlot(figureHandle.number, linewidth=3, color='r')
+        
+        mpp.yscale('log')
+        mpp.xscale('log')
         mpp.grid(which='minor')
 
 
