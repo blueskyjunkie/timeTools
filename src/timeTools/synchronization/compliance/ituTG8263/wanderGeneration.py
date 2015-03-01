@@ -19,6 +19,6 @@ import timeTools.synchronization.compliance.analysis as tsca
 
 
 # Wander generation, Section 6.1, Rec. ITU-T G.8263/Y.1363 (02/2012), pp5
-constantTemperatureNs = tsca.Mask([([0.1, 1000], [1000]), ([1000], [0, 1])])
+constantTemperatureMtieNs = tsca.Mask([([0.1, 1000], [1000]), ([1000], [0, 1])])
 
-variableTemperatureNs = tsca.Mask([([0.1, 100], [1000]), ([100], [0, 10])])
+variableTemperatureMtieNs = tsca.Mask([([0.1, 100], [1000]), ([100], [0, 10])])
