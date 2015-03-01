@@ -16,7 +16,6 @@
 '''
 
 import matplotlib.pyplot as mpp
-import numpy
 import unittest
 
 import timeTools.synchronization.compliance.ituTG8262.eecOption1.wanderGeneration as tscg8262eec1wg
