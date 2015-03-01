@@ -30,6 +30,7 @@ import timeTools.synchronization.compliance.ituTG8262.eecOption2.holdover as tsc
 import timeTools.synchronization.compliance.ituTG8262.eecOption2.noiseTransfer as tscg8262eec2nt
 import timeTools.synchronization.compliance.ituTG8262.eecOption2.frequencyAccuracy as tscg8262eec2fa
 import timeTools.synchronization.compliance.ituTG8262.eecOption1.frequencyAccuracy as tscg8262eec1fa
+import timeTools.synchronization.compliance.ituTG8262.eecOption2.phaseDiscontinuity as tscg8262eec2pd
 
 
 class TestItuTG8262 (unittest.TestCase):
@@ -290,6 +291,7 @@ class TestItuTG8262 (unittest.TestCase):
         mpp.yscale('log')
         mpp.xscale('log')
         mpp.grid(which='minor')
+        
 
     def testEec2FrequencyAccuracyMask (self):
         thisMask = tscg8262eec2fa.ffoPpm
@@ -305,6 +307,7 @@ class TestItuTG8262 (unittest.TestCase):
         
         mpp.xscale('symlog')
         mpp.grid(which='minor')
+        
 
     def testEec1FrequencyAccuracyMask (self):
         thisMask = tscg8262eec1fa.generateFfoMask()
@@ -319,6 +322,22 @@ class TestItuTG8262 (unittest.TestCase):
         thisMask.addToPlot(figureHandle.number, linewidth=3, color='r', marker='o')
         
         mpp.xscale('symlog')
+        mpp.grid(which='minor')
+        
+
+    def testEec2TdevPhaseDiscontinuityMask (self):
+        thisMask = tscg8262eec2pd.mtieNs
+        
+        figureHandle = mpp.figure()
+        mpp.title(self.testEec2TdevPhaseDiscontinuityMask.__name__)
+        # Set the plot limits before the mask plot so that it will figure out 
+        # appropriate ranges in the absence of signal data
+        mpp.xlim( (0.014, 1000) )
+        mpp.ylim( (10, 1000) )
+        thisMask.addToPlot(figureHandle.number, linewidth=3, color='r')
+        
+        mpp.yscale('log')
+        mpp.xscale('log')
         mpp.grid(which='minor')
 
 
