@@ -18,7 +18,12 @@
 import timeTools.synchronization.compliance.analysis as tsca
 
 
-# Wander generation, Section 6.1, Rec. ITU-T G.8263/Y.1363 (02/2012), pp5
-constantTemperatureMtieNs = tsca.Mask([([0.1, 1000], [1000]), ([1000], [0, 1])])
+# Rec. ITU-T G.8262/Y.1362 (07/2010), Section 6.2, pp3
 
-variableTemperatureMtieNs = tsca.Mask([([0.1, 100], [1000]), ([100], [0, 10])])
+boundPpm = 4.6
+
+def generateFfoMask (durationSeconds = (24 * 3600 * 365) ):
+    
+    ffoPpm = tsca.Mask([ ([0, durationSeconds], [boundPpm], [-boundPpm]) ])
+    
+    return ffoPpm

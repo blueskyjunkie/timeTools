@@ -27,6 +27,10 @@ import timeTools.synchronization.compliance.ituTG8262.eecOption2.wanderTransfer 
 import timeTools.synchronization.compliance.ituTG8262.eecOption2.transient as tscg8262eec2t
 import timeTools.synchronization.compliance.ituTG8262.eecOption1.holdover as tscg8262eec1h
 import timeTools.synchronization.compliance.ituTG8262.eecOption2.holdover as tscg8262eec2h
+import timeTools.synchronization.compliance.ituTG8262.eecOption2.noiseTransfer as tscg8262eec2nt
+import timeTools.synchronization.compliance.ituTG8262.eecOption2.frequencyAccuracy as tscg8262eec2fa
+import timeTools.synchronization.compliance.ituTG8262.eecOption1.frequencyAccuracy as tscg8262eec1fa
+import timeTools.synchronization.compliance.ituTG8262.eecOption2.phaseDiscontinuity as tscg8262eec2pd
 
 
 class TestItuTG8262 (unittest.TestCase):
@@ -136,7 +140,7 @@ class TestItuTG8262 (unittest.TestCase):
         mpp.title(self.testEec2TdevConstantTemperatureG8262WanderGenerationMask.__name__)
         # Set the plot limits before the mask plot so that it will figure out 
         # appropriate ranges in the absence of signal data
-        mpp.xlim( (0.1, 1000) )
+        mpp.xlim( (0.1, 10000) )
         mpp.ylim( (0.1, 100) )
         thisMask.addToPlot(figureHandle.number, linewidth=3, color='r')
         
@@ -218,7 +222,7 @@ class TestItuTG8262 (unittest.TestCase):
         # appropriate ranges in the absence of signal data
         mpp.xlim( (0.014, 10) )
         mpp.ylim( (10, 1000) )
-        thisMask.addToPlot(figureHandle.number)
+        thisMask.addToPlot(figureHandle.number, linewidth=3, color='r')
           
         mpp.yscale('log')
         mpp.xscale('log')
@@ -234,8 +238,10 @@ class TestItuTG8262 (unittest.TestCase):
         # appropriate ranges in the absence of signal data
         mpp.xlim( (0.01, 10000) )
         mpp.ylim( (-10e6, 10e6) )
-        thisMask.addToPlot(figureHandle.number)
+        thisMask.addToPlot(figureHandle.number, linewidth=3, color='r')
           
+        mpp.xscale('symlog')
+        mpp.yscale('symlog')
         mpp.grid()
         
 
@@ -250,7 +256,89 @@ class TestItuTG8262 (unittest.TestCase):
         mpp.ylim( (-10e6, 10e6) )
         thisMask.addToPlot(figureHandle.number)
           
+        mpp.xscale('symlog')
+        mpp.yscale('symlog')
         mpp.grid()
+        
+        
+    def testEec1SinusoidalWanderMask (self):
+        thisMask = tscg8262eec1wt.generateSinusoidalMask()
+          
+        figureHandle = mpp.figure()
+        mpp.title(self.testEec1SinusoidalWanderMask.__name__)
+        # Set the plot limits before the mask plot so that it will figure out 
+        # appropriate ranges in the absence of signal data
+        mpp.xlim( (0.1e-3, 10) )
+        mpp.ylim( (0.1, 6) )
+        thisMask.addToPlot(figureHandle.number)
+          
+        mpp.xscale('log')
+        mpp.yscale('log')
+        mpp.grid(which='minor')
+        
+
+    def testEec2TdevNoiseTransferMask (self):
+        thisMask = tscg8262eec2nt.tdevNs
+        
+        figureHandle = mpp.figure()
+        mpp.title(self.testEec2TdevNoiseTransferMask.__name__)
+        # Set the plot limits before the mask plot so that it will figure out 
+        # appropriate ranges in the absence of signal data
+        mpp.xlim( (0.1, 1000) )
+        mpp.ylim( (1, 10000) )
+        thisMask.addToPlot(figureHandle.number, linewidth=3, color='r')
+        
+        mpp.yscale('log')
+        mpp.xscale('log')
+        mpp.grid(which='minor')
+        
+
+    def testEec2FrequencyAccuracyMask (self):
+        thisMask = tscg8262eec2fa.ffoPpm
+        
+        figureHandle = mpp.figure()
+        
+        mpp.title(self.testEec2FrequencyAccuracyMask.__name__)
+        # Set the plot limits before the mask plot so that it will figure out 
+        # appropriate ranges in the absence of signal data
+        mpp.xlim( (0.1, (24.0 * 3600 * 365)) )
+        mpp.ylim( (-5.0, 5.0) )
+        thisMask.addToPlot(figureHandle.number, linewidth=3, color='r', marker='o')
+        
+        mpp.xscale('symlog')
+        mpp.grid(which='minor')
+        
+
+    def testEec1FrequencyAccuracyMask (self):
+        thisMask = tscg8262eec1fa.generateFfoMask()
+        
+        figureHandle = mpp.figure()
+        
+        mpp.title(self.testEec1FrequencyAccuracyMask.__name__)
+        # Set the plot limits before the mask plot so that it will figure out 
+        # appropriate ranges in the absence of signal data
+        mpp.xlim( (0.1, (24.0 * 3600 * 365)) )
+        mpp.ylim( (-5.0, 5.0) )
+        thisMask.addToPlot(figureHandle.number, linewidth=3, color='r', marker='o')
+        
+        mpp.xscale('symlog')
+        mpp.grid(which='minor')
+        
+
+    def testEec2TdevPhaseDiscontinuityMask (self):
+        thisMask = tscg8262eec2pd.mtieNs
+        
+        figureHandle = mpp.figure()
+        mpp.title(self.testEec2TdevPhaseDiscontinuityMask.__name__)
+        # Set the plot limits before the mask plot so that it will figure out 
+        # appropriate ranges in the absence of signal data
+        mpp.xlim( (0.014, 1000) )
+        mpp.ylim( (10, 1000) )
+        thisMask.addToPlot(figureHandle.number, linewidth=3, color='r')
+        
+        mpp.yscale('log')
+        mpp.xscale('log')
+        mpp.grid(which='minor')
 
 
     def tearDown (self):

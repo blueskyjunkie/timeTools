@@ -31,7 +31,7 @@ import timeTools.synchronization.compliance.ituTG8263.holdoverTransient as tscg8
 class TestItuTG8263 (unittest.TestCase):
     
     def testConstantTemperatureWanderGenerationMask (self):
-        thisMask = tscg8263wg.constantTemperatureNs
+        thisMask = tscg8263wg.constantTemperatureMtieNs
         
         figureHandle = mpp.figure()
         # Set the plot limits before the mask plot so that it will figure out 
@@ -47,8 +47,8 @@ class TestItuTG8263 (unittest.TestCase):
         
     
     def testVariableTemperatureWanderGenerationMask (self):
-        constTempMask = tscg8263wg.constantTemperatureNs
-        thisMask = tscg8263wg.variableTemperatureNs
+        constTempMask = tscg8263wg.constantTemperatureMtieNs
+        thisMask = tscg8263wg.variableTemperatureMtieNs
         
         figureHandle = mpp.figure()
         # Set the plot limits before the mask plot so that it will figure out 

@@ -43,7 +43,7 @@ class TestVisualization(unittest.TestCase):
         
         maskResult = thisMask.evaluate(thisSignal)
         
-        mpp.title('testVisualization1')
+        mpp.title(self.testVisualization1.__name__)
         
         self.assertFalse(maskResult, 'testVisualization (1) failed mask evaluation')
         
@@ -65,10 +65,10 @@ class TestVisualization(unittest.TestCase):
         
         thisPlot.go()
         
-        mpp.title('testVisualization2')
+        mpp.title(self.testVisualization2.__name__)
 
 
-    def __del__ (self):
+    def tearDown (self):
         if __name__ == "__main__":
             mpp.show()
     

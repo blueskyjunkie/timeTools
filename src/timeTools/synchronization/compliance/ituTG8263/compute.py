@@ -27,6 +27,6 @@ def analyzeItuTG8263Mask (localTimeSeconds, referenceTimeSeconds, samplingInterv
     
     mtieNanoseconds = mtieSeconds / 1e-9
     
-    analysisResult = tscg8263wg.constantTemperatureNs.evaluate( (observationIntervalsSeconds, mtieNanoseconds) )
+    analysisResult = tscg8263wg.constantTemperatureMtieNs.evaluate( (observationIntervalsSeconds, mtieNanoseconds) )
     
-    return analysisResult, tscg8263wg.constantTemperatureNs, (observationIntervalsSeconds, mtieNanoseconds)
+    return analysisResult, tscg8263wg.constantTemperatureMtieNs, (observationIntervalsSeconds, mtieNanoseconds)

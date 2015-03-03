@@ -24,6 +24,11 @@ import timeTools.synchronization.compliance.analysis as sca
 
 class TestAnalysis(unittest.TestCase):
     
+    def testMask0 (self):
+        # There should be no exceptions from this call
+        thisMask = sca.Mask([])
+        
+    
     def testMask1 (self):
         thisMask = sca.Mask([( [0.0], [10.0] )])
         
@@ -109,7 +114,7 @@ class TestAnalysis(unittest.TestCase):
         
         figureHandle = mpp.figure()
         thisMask.addToPlot(figureHandle.number)
-        mpp.title('testPlotMask1')
+        mpp.title(self.testPlotMask1.__name__)
         
         mpp.ylim( (0, 30) )
 
@@ -120,7 +125,7 @@ class TestAnalysis(unittest.TestCase):
         figureHandle = mpp.figure()
         # Test adding line properties
         thisMask.addToPlot(figureHandle.number, linewidth=3, linestyle='-', color='r')
-        mpp.title('testPlotMask2')
+        mpp.title(self.testPlotMask2.__name__)
         
         mpp.ylim( (0, 30) )
 
@@ -130,7 +135,7 @@ class TestAnalysis(unittest.TestCase):
         
         figureHandle = mpp.figure()
         thisMask.addToPlot(figureHandle.number)
-        mpp.title('testPlotMask3')
+        mpp.title(self.testPlotMask3.__name__)
         
         mpp.ylim( (-20, 30) )
 
@@ -140,12 +145,12 @@ class TestAnalysis(unittest.TestCase):
         
         figureHandle = mpp.figure()
         thisMask.addToPlot(figureHandle.number)
-        mpp.title('testPlotMask4')
+        mpp.title(self.testPlotMask4.__name__)
         
         mpp.ylim( (0, 30) )
 
 
-    def __del__ (self):
+    def tearDown (self):
         if __name__ == "__main__":
             mpp.show()
         
