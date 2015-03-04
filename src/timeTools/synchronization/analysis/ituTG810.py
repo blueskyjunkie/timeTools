@@ -116,3 +116,49 @@ def calculateTdev (localTime, referenceTime, samplingInterval, desiredNumberObse
     observationIntervals = samplingInterval * intervalIndex
     
     return (tdev, observationIntervals)
+
+
+def adevKernel (timeError, n):
+    numberPoints = len(timeError)
+    baseIndex = numpy.arange(0, (numberPoints - (2 * n)))
+    
+    error1 = timeError[baseIndex + (2 * n)]
+    error2 = 2 * timeError[baseIndex + n]
+    error3 = timeError[baseIndex]
+    
+    thisSum = numpy.sum(error1 - error2 + error3)
+    
+    return thisSum
+
+
+def calculateAdev (localTime, referenceTime, samplingInterval, desiredNumberObservations):
+    assert(len(localTime) > 1)
+    assert(len(referenceTime) > 1)
+    assert(referenceTime.size == localTime.size)
+
+    # Assume the signal is uniformly sampled.
+    timeError = calculateTimeError(localTime, referenceTime)
+
+    numberErrorPoints = len(timeError)
+    rawAdevSize = math.floor((numberErrorPoints - 1) / 2)
+    maxIntervalIndex = rawAdevSize
+
+    intervalIndex = si.generateMonotonicLogScale(numpy.floor(si.generateLogIntervalScale(1, maxIntervalIndex, desiredNumberObservations)))
+    
+    # ITU-T Rec. G.810 (08/96), Appendix II.1, pp 14
+    rawAdev = numpy.zeros(rawAdevSize)
+    for n in (numpy.arange(0, rawAdevSize) + 1):
+        iterationSize = numberErrorPoints - (2 * n)
+        adevFactor = 1 / (2 * numpy.power((n * samplingInterval), 2) * iterationSize)
+        
+        adevSum = numpy.power(adevKernel(timeError, n), 2)
+        
+        rawAdev[n - 1] = math.sqrt(adevFactor * adevSum)
+    
+    # Reduce the resolution to that specified
+    # In the case of the direct ADEV method, this doesn't improve computation time, but it does improve memory usage
+    adev = rawAdev[intervalIndex - 1]
+    
+    observationIntervals = samplingInterval * intervalIndex
+    
+    return (adev, observationIntervals)
