@@ -162,3 +162,17 @@ def calculateAdev (localTime, referenceTime, samplingInterval, desiredNumberObse
     observationIntervals = samplingInterval * intervalIndex
     
     return (adev, observationIntervals)
+
+
+def calculateMdev (localTime, referenceTime, samplingInterval, desiredNumberObservations):
+    assert(len(localTime) > 1)
+    assert(len(referenceTime) > 1)
+    assert(referenceTime.size == localTime.size)
+    
+    tdev, observationIntervals = calculateTdev(localTime, referenceTime, samplingInterval, desiredNumberObservations)
+    
+    # ITU-T Rec. G.810 (08/96), Appendix II.2, pp 15
+    # ITU-T Rec. G.810 (08/96), Appendix II.3, pp 16
+    mdev = (numpy.sqrt(3) / observationIntervals) * tdev
+    
+    return (mdev, observationIntervals)
