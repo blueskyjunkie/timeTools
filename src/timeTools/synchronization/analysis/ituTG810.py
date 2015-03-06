@@ -176,3 +176,48 @@ def calculateMdev (localTime, referenceTime, samplingInterval, desiredNumberObse
     mdev = (numpy.sqrt(3) / observationIntervals) * tdev
     
     return (mdev, observationIntervals)
+
+
+def tieRmsKernel(timeError, n):
+    numberPoints = len(timeError)
+    baseIndex = numpy.arange(0, (numberPoints - n))
+    
+    error1 = timeError[baseIndex + n]
+    error2 = timeError[baseIndex]
+    
+    thisSum = numpy.sum(numpy.power((error1 - error2), 2))
+    
+    return thisSum
+    
+
+def calculateTieRms (localTime, referenceTime, samplingInterval, desiredNumberObservations):
+    assert(len(localTime) > 1)
+    assert(len(referenceTime) > 1)
+    assert(referenceTime.size == localTime.size)
+
+    # Assume the signal is uniformly sampled.
+    timeError = calculateTimeError(localTime, referenceTime)
+
+    numberErrorPoints = len(timeError)
+    rawTieRmsSize = numberErrorPoints - 1
+    maxIntervalIndex = rawTieRmsSize
+
+    intervalIndex = si.generateMonotonicLogScale(numpy.floor(si.generateLogIntervalScale(1, maxIntervalIndex, desiredNumberObservations)))
+    
+    # ITU-T Rec. G.810 (08/96), Appendix II.4, pp 18
+    rawTieRms = numpy.zeros(rawTieRmsSize)
+    for n in (numpy.arange(0, rawTieRmsSize) + 1):
+        iterationSize = numberErrorPoints - n
+        tieRmsFactor = 1 / iterationSize
+        
+        tieRmsSum = tieRmsKernel(timeError, n)
+        
+        rawTieRms[n - 1] = math.sqrt(tieRmsFactor * tieRmsSum)
+    
+    # Reduce the resolution to that specified
+    # In the case of the direct TIE rms method, this doesn't improve computation time, but it does improve memory usage
+    tieRms = rawTieRms[intervalIndex - 1]
+    
+    observationIntervals = samplingInterval * intervalIndex
+    
+    return (tieRms, observationIntervals)
