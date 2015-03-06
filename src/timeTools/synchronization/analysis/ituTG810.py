@@ -221,3 +221,11 @@ def calculateTieRms (localTime, referenceTime, samplingInterval, desiredNumberOb
     observationIntervals = samplingInterval * intervalIndex
     
     return (tieRms, observationIntervals)
+
+
+def calculateTvar (localTime, referenceTime, samplingInterval, desiredNumberObservations):
+    tdev, observationIntervals = calculateTdev(localTime, referenceTime, samplingInterval, desiredNumberObservations)
+    
+    tvar = numpy.power(tdev, 2)
+    
+    return (tvar, observationIntervals)
