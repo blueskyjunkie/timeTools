@@ -19,6 +19,7 @@ import matplotlib.pyplot as mpp
 import unittest
 
 import timeTools.synchronization.compliance.ituTG8261.eecOption1.networkWander as tscg8261eec1nw
+import timeTools.synchronization.compliance.ituTG8261.eecOption2.networkWander as tscg8261eec2nw
 
 
 class TestItuTG8261 (unittest.TestCase):
@@ -48,6 +49,22 @@ class TestItuTG8261 (unittest.TestCase):
         # appropriate ranges in the absence of signal data
         mpp.xlim( (0.1, 100000) )
         mpp.ylim( (10, 1000) )
+        thisMask.addToPlot(figureHandle.number)
+          
+        mpp.yscale('log')
+        mpp.xscale('log')
+        mpp.grid(which='minor')
+    
+
+    def testEecOption2TdevMask (self):
+        thisMask = tscg8261eec2nw.tdevNs
+          
+        figureHandle = mpp.figure()
+        mpp.title(self.testEecOption2TdevMask.__name__)
+        # Set the plot limits before the mask plot so that it will figure out 
+        # appropriate ranges in the absence of signal data
+        mpp.xlim( (0.01, 1000) )
+        mpp.ylim( (1, 1000) )
         thisMask.addToPlot(figureHandle.number)
           
         mpp.yscale('log')
