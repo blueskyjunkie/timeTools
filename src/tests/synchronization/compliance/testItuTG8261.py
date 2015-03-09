@@ -104,6 +104,22 @@ class TestItuTG8261 (unittest.TestCase):
         mpp.yscale('log')
         mpp.xscale('log')
         mpp.grid(which='minor')
+    
+
+    def testDc12048MrtieMask (self):
+        thisMask = tscg8261dc1wb.case12048MrtieMicroseconds
+          
+        figureHandle = mpp.figure()
+        mpp.title(self.testDc12048MrtieMask.__name__)
+        # Set the plot limits before the mask plot so that it will figure out 
+        # appropriate ranges in the absence of signal data
+        mpp.xlim( (0.01, 1000) )
+        mpp.ylim( (0.01, 10) )
+        thisMask.addToPlot(figureHandle.number)
+          
+        mpp.yscale('log')
+        mpp.xscale('log')
+        mpp.grid(which='minor')
         
 
     def tearDown (self):

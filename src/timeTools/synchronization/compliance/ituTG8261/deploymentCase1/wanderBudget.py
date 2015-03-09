@@ -18,9 +18,17 @@
 import timeTools.synchronization.compliance.analysis as tsca
 
 
-# Rec. ITU-T G.8261/Y.1361 (08/2013), Section 9.1.1.2, Table 2, pp 17
+# Rec. ITU-T G.8261/Y.1361 (08/2013), Section 9.1.1.1, Table 2, pp 17
 
 case11544MrtieMicroseconds = tsca.Mask([ ([0.1, 0.47], [0, 4.5]), 
                                         ([0.47, 900], [2.1]), 
                                         ([900, 1930], [0, 2.33e-3]), 
                                         ([1930, 86400], [4.5]) ])
+
+
+# Rec. ITU-T G.8261/Y.1361 (08/2013), Section 9.1.1.1, Table 1, pp 16
+
+case12048MrtieMicroseconds = tsca.Mask([ ([0.05, 0.2], [0, 10.75]), 
+                                        ([0.2, 32], [9 * 0.24]), 
+                                        ([32, 64], [0, 0.067]), 
+                                        ([64, 1000], [18 * 0.24]) ])
