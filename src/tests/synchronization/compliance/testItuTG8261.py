@@ -21,6 +21,7 @@ import unittest
 import timeTools.synchronization.compliance.ituTG8261.eecOption1.networkWander as tscg8261eec1nw
 import timeTools.synchronization.compliance.ituTG8261.eecOption2.networkWander as tscg8261eec2nw
 import timeTools.synchronization.compliance.ituTG8261.deploymentCase2.wanderBudget as tscg8261dc2awb
+import timeTools.synchronization.compliance.ituTG8261.deploymentCase1.wanderBudget as tscg8261dc1wb
 
 
 class TestItuTG8261 (unittest.TestCase):
@@ -58,10 +59,26 @@ class TestItuTG8261 (unittest.TestCase):
     
 
     def testEecOption2TdevMask (self):
-        thisMask = tscg8261dc2awb.case2A2048MrtieMicroseconds
+        thisMask = tscg8261eec2nw.tdevNs
           
         figureHandle = mpp.figure()
         mpp.title(self.testEecOption2TdevMask.__name__)
+        # Set the plot limits before the mask plot so that it will figure out 
+        # appropriate ranges in the absence of signal data
+        mpp.xlim( (0.01, 1000) )
+        mpp.ylim( (1, 1000) )
+        thisMask.addToPlot(figureHandle.number)
+          
+        mpp.yscale('log')
+        mpp.xscale('log')
+        mpp.grid(which='minor')
+    
+
+    def testDc2AMrtieMask (self):
+        thisMask = tscg8261dc2awb.case2A2048MrtieMicroseconds
+          
+        figureHandle = mpp.figure()
+        mpp.title(self.testDc2AMrtieMask.__name__)
         # Set the plot limits before the mask plot so that it will figure out 
         # appropriate ranges in the absence of signal data
         mpp.xlim( (0.01, 1000) )
@@ -73,15 +90,15 @@ class TestItuTG8261 (unittest.TestCase):
         mpp.grid(which='minor')
     
 
-    def testDc2AMrtieMask (self):
-        thisMask = tscg8261eec2nw.tdevNs
+    def testDc11544MrtieMask (self):
+        thisMask = tscg8261dc1wb.case11544MrtieMicroseconds
           
         figureHandle = mpp.figure()
-        mpp.title(self.testDc2AMrtieMask.__name__)
+        mpp.title(self.testDc11544MrtieMask.__name__)
         # Set the plot limits before the mask plot so that it will figure out 
         # appropriate ranges in the absence of signal data
-        mpp.xlim( (0.01, 1000) )
-        mpp.ylim( (1, 1000) )
+        mpp.xlim( (0.01, 100000) )
+        mpp.ylim( (0.01, 10) )
         thisMask.addToPlot(figureHandle.number)
           
         mpp.yscale('log')
