@@ -148,6 +148,27 @@ class TestTdev (unittest.TestCase):
         
         tdevTest = spt.ToleranceValue(directTdev, 0.1, spt.ToleranceUnit['percent'])
         self.assertTrue(numpy.all(tdevTest.isWithinTolerance(fastTdev)), 'TDEV observations not equivalent')
+    
+    def testDirectTvar (self):
+        timeStepSeconds = 1 / 16
+        referenceTimeSeconds = numpy.arange(0, 9)
+        timeError = numpy.array([1, 0, 4, 2, 5, 1, 4, 0, 3])
+        expectedTvar = numpy.power(numpy.array([2.591193879, 0.7499999999, 0.5443310541]), 2)
+        
+        numberObservations = 3
+        
+        localTimeSeconds = referenceTimeSeconds + timeError
+        
+        directTvar, directObservationIntervals = sag810.calculateTvar(localTimeSeconds, 
+                                                                      referenceTimeSeconds, 
+                                                                      timeStepSeconds, 
+                                                                      numberObservations)
+        
+        self.assertTrue(len(directObservationIntervals) == numberObservations, 'Incorrect number of TVAR observations')
+        self.assertTrue(len(directObservationIntervals) == len(directTvar), 'Mismatched TVAR and observations')
+        
+        tvarTest = spt.ToleranceValue(expectedTvar, 1e-8, spt.ToleranceUnit['relative'])
+        self.assertTrue(numpy.all(tvarTest.isWithinTolerance(directTvar)), 'TVAR observations not equivalent')
 
 
 if __name__ == "__main__":

@@ -31,6 +31,7 @@ import timeTools.synchronization.compliance.ituTG8262.eecOption2.noiseTransfer a
 import timeTools.synchronization.compliance.ituTG8262.eecOption2.frequencyAccuracy as tscg8262eec2fa
 import timeTools.synchronization.compliance.ituTG8262.eecOption1.frequencyAccuracy as tscg8262eec1fa
 import timeTools.synchronization.compliance.ituTG8262.eecOption2.phaseDiscontinuity as tscg8262eec2pd
+import timeTools.synchronization.compliance.ituTG8262.jitterGeneration as tscg8262jg
 
 
 class TestItuTG8262 (unittest.TestCase):
@@ -339,7 +340,39 @@ class TestItuTG8262 (unittest.TestCase):
         mpp.yscale('log')
         mpp.xscale('log')
         mpp.grid(which='minor')
-
+        
+        
+    def testJitterGeneration1GMask (self):
+        thisMask = tscg8262jg.amplitude1G
+        
+        figureHandle = mpp.figure()
+        mpp.title(self.testJitterGeneration1GMask.__name__)
+        # Set the plot limits before the mask plot so that it will figure out 
+        # appropriate ranges in the absence of signal data
+        mpp.xlim( (1e3, 15e6) )
+        mpp.ylim( (0, 1) )
+        thisMask.addToPlot(figureHandle.number, linewidth=3, color='r')
+        
+        mpp.yscale('log')
+        mpp.xscale('log')
+        mpp.grid(which='minor')
+        
+        
+    def testJitterGeneration10GMask (self):
+        thisMask = tscg8262jg.amplitude10G
+        
+        figureHandle = mpp.figure()
+        mpp.title(self.testJitterGeneration10GMask.__name__)
+        # Set the plot limits before the mask plot so that it will figure out 
+        # appropriate ranges in the absence of signal data
+        mpp.xlim( (1e3, 100e6) )
+        mpp.ylim( (0, 1) )
+        thisMask.addToPlot(figureHandle.number, linewidth=3, color='r')
+        
+        mpp.yscale('log')
+        mpp.xscale('log')
+        mpp.grid(which='minor')
+        
 
     def tearDown (self):
         if __name__ == "__main__":
