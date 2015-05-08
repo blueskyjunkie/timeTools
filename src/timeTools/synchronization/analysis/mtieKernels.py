@@ -18,20 +18,20 @@
 import numpy
 
 
-def _calculatePeakToPeakAmplitude (signal):
-    maxError = numpy.max(signal)
-    minError = numpy.min(signal)
+def _calculatePeakToPeakAmplitude( signal ):
+    maxError = numpy.max( signal )
+    minError = numpy.min( signal )
     
     peakToPeakAmplitude = maxError - minError
     
     return peakToPeakAmplitude
 
 
-def slidingWindow (timeError, thisInterval):
+def slidingWindow( timeError, thisInterval ):
     thisMtie = 0
-    for m in numpy.arange(0, timeError.size, 1):
-        thisWindow = timeError[m : (m + thisInterval) : 1]
-        peakToPeakError = _calculatePeakToPeakAmplitude(thisWindow)
+    for m in numpy.arange( 0, ( timeError.size - thisInterval ), 1 ):
+        thisWindow = timeError[ m : ( m + thisInterval + 1 ) : 1 ]
+        peakToPeakError = _calculatePeakToPeakAmplitude( thisWindow )
         
         if peakToPeakError > thisMtie:
             thisMtie = peakToPeakError
@@ -39,18 +39,18 @@ def slidingWindow (timeError, thisInterval):
     return thisMtie
 
 
-def smartWindow (timeError, thisInterval):
+def smartWindow( timeError, thisInterval ):
     
-    def findMaximumPosition (thisWindow, m):
-        maxWindowPosition = numpy.argmax(thisWindow)
+    def findMaximumPosition( thisWindow, m ):
+        maxWindowPosition = numpy.argmax( thisWindow )
         
         maxSignalPosition = maxWindowPosition + m
         
         return maxSignalPosition
     
     
-    def findMinimumPosition (thisWindow, m):
-        minWindowPosition = numpy.argmin(thisWindow)
+    def findMinimumPosition( thisWindow, m ):
+        minWindowPosition = numpy.argmin( thisWindow )
         
         minSignalPosition = minWindowPosition + m
         
@@ -64,26 +64,27 @@ def smartWindow (timeError, thisInterval):
     completed = False
     lastIteration = False
     while not completed:
-        thisWindow = timeError[m : (m + thisInterval) : 1]        
-        peakToPeakError = _calculatePeakToPeakAmplitude(thisWindow)
+        thisWindow = timeError[ m : ( m + thisInterval + 1 ) : 1 ]        
+        peakToPeakError = _calculatePeakToPeakAmplitude( thisWindow )
         
         if peakToPeakError > thisMtie:
             thisMtie = peakToPeakError
         
-        maxSignalPosition = findMaximumPosition(thisWindow, m)
-        minSignalPosition = findMinimumPosition(thisWindow, m)
+        maxSignalPosition = findMaximumPosition( thisWindow, m )
+        minSignalPosition = findMinimumPosition( thisWindow, m )
         
-        nextWindowPosition = numpy.min([maxSignalPosition, minSignalPosition])
+        nextWindowPosition = numpy.min( [ maxSignalPosition, minSignalPosition ] )
             
         if lastIteration:
             completed = True
         elif nextWindowPosition == m:
             nextWindowPosition = m + 1
             
-        if (nextWindowPosition + thisInterval) >= numberSamples:
+        if ( nextWindowPosition + thisInterval ) >= numberSamples:
             nextWindowPosition = numberSamples - thisInterval
             lastIteration = True
             
         m = nextWindowPosition
         
     return thisMtie
+
