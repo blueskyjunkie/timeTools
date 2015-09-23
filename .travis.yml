@@ -18,7 +18,7 @@ install:
 
 # Run test
 script:
-  - "python src/runTests.py"
+  - coverage run --source=src/timeTools src/runTests.py"
   
 # Calculate coverage
 after_success:
