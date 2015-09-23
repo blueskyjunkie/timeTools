@@ -13,12 +13,11 @@ before_install:
 # Install packages
 install:
   - conda install --yes python=$TRAVIS_PYTHON_VERSION atlas numpy scipy matplotlib pandas statsmodels
-  # Coverage packages are on my binstar channel
   - "pip install coveralls"
 
 # Run test
 script:
-  - coverage run --source=src/timeTools src/runTests.py"
+  - coverage run --source=src/timeTools src/runTests.py
   
 # Calculate coverage
 after_success:
