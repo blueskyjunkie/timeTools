@@ -20,8 +20,9 @@ import os
 import unittest
 
 if __name__ == '__main__':
-    testsuite = unittest.TestLoader().discover(os.path.join('.', 'tests'))
-    unittest.TextTestRunner(verbosity=1).run(testsuite)
+    thisDir = os.path.dirname( os.path.realpath( __file__ ) )
+    testsuite = unittest.TestLoader().discover( os.path.join( thisDir, 'tests' ) )
+    unittest.TextTestRunner( verbosity = 1 ).run( testsuite )
     
     # Showing all plots is to be deferred until here 
     mpp.show()
