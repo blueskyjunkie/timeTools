@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/blueskyjunkie/timeTools.png?label=ready&title=Ready)](https://waffle.io/blueskyjunkie/timeTools)
 # timeTools
 
 [![DOI](https://zenodo.org/badge/10532/blueskyjunkie/timeTools.svg)](http://dx.doi.org/10.5281/zenodo.15797)
