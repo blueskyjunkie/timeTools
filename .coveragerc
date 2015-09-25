@@ -1,5 +1,5 @@
 [run]
-source = timeTools
+source = src/timeTools
 omit =
     */python?.?/*
     */lib-python/?.?/*.py
