@@ -1,6 +1,8 @@
 [![Stories in Ready](https://badge.waffle.io/blueskyjunkie/timeTools.png?label=ready&title=Ready)](https://waffle.io/blueskyjunkie/timeTools)
-# timeTools
+[![Build Status](https://travis-ci.org/blueskyjunkie/timeTools.svg?branch=master)](https://travis-ci.org/blueskyjunkie/timeTools)
+[![Coverage Status](https://coveralls.io/repos/blueskyjunkie/timeTools/badge.svg?branch=master&service=github)](https://coveralls.io/github/blueskyjunkie/timeTools?branch=master)
 
+# timeTools
 [![DOI](https://zenodo.org/badge/10532/blueskyjunkie/timeTools.svg)](http://dx.doi.org/10.5281/zenodo.15797)
 
 Python utilities relating to synchronization analysis and visualization such as time error, MTIE, TDEV and others.

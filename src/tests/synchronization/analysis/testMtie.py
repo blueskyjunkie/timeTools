@@ -16,6 +16,7 @@
 '''
 
 import numpy
+import time
 import unittest
 
 import timeTools.signalProcessing.tolerance as spt
@@ -26,85 +27,90 @@ import timeTools.synchronization.analysis.ituTG810 as sag810
 import timeTools.synchronization.analysis.fastMtie as samtie
 
 
-class TestMtie(unittest.TestCase):
+class TestMtie( unittest.TestCase ):
 
-    def testSingleProcessMtie(self):
+    def testSingleProcessMtie( self ):
         timeStepSeconds = 1 / 16
-        numberSamples = 1000
+        numberSamples = 10000
         
         numberObservations = 5
         
         clockFfoPpb = 16
         clockRmsJitterPpb = 3.0
         
-        referenceTimeGenerator = st.referenceGenerator(timeStepSeconds)
-        referenceTimeSeconds = referenceTimeGenerator.generate(numberSamples)
+        referenceTimeGenerator = st.referenceGenerator( timeStepSeconds )
+        referenceTimeSeconds = referenceTimeGenerator.generate( numberSamples )
         
-        clockModel = sc.Model(initialFfoPpb = clockFfoPpb, rmsJitterPpb = clockRmsJitterPpb)
+        clockModel = sc.Model( initialFfoPpb = clockFfoPpb, rmsJitterPpb = clockRmsJitterPpb )
         
-        localTimeSeconds, instantaneousLoFfoPpb = clockModel.calculateOffset(referenceTimeSeconds)
+        localTimeSeconds, instantaneousLoFfoPpb = clockModel.calculateOffset( referenceTimeSeconds )
         
-        directMtie, directObservationIntervals = sag810.calculateMtie(localTimeSeconds, 
+        directMtie, directObservationIntervals = sag810.calculateMtie( localTimeSeconds, 
                                                                       referenceTimeSeconds, 
                                                                       timeStepSeconds, 
-                                                                      numberObservations)
+                                                                      numberObservations )
         # Test the single process MTIE calculation
-        fastMtie, fastObservationIntervals = samtie.calculateMtie(localTimeSeconds, 
+        fastMtie, fastObservationIntervals = samtie.calculateMtie( localTimeSeconds, 
                                                                   referenceTimeSeconds, 
                                                                   timeStepSeconds, 
                                                                   numberObservations, 
-                                                                  maximumNumberWorkers = 1)
+                                                                  maximumNumberWorkers = 1 )
         
-        self.assertTrue(len(directMtie) == len(fastMtie), 
-                        'MTIE data lengths not equal')
-        self.assertTrue(len(directObservationIntervals) == len(fastObservationIntervals), 
-                        'MTIE observation interval lengths not equal')
+        self.assertTrue( len( directMtie ) == len( fastMtie ), 
+                        'MTIE data lengths not equal' )
+        self.assertTrue( len( directObservationIntervals ) == len( fastObservationIntervals ), 
+                        'MTIE observation interval lengths not equal' )
         
-        self.assertTrue(numpy.all(directObservationIntervals == fastObservationIntervals), 
-                        'MTIE observations intervals not equal')
+        self.assertTrue( numpy.all( directObservationIntervals == fastObservationIntervals ), 
+                        'MTIE observations intervals not equal' )
         
-        mtieTest = spt.ToleranceValue(directMtie, 0.1, spt.ToleranceUnit['percent'])
-        self.assertTrue(numpy.all(mtieTest.isWithinTolerance(fastMtie)), 
-                        'MTIE observations not equivalent')
+        mtieTest = spt.ToleranceValue( directMtie, 0.1, spt.ToleranceUnit[ 'percent' ] )
+        self.assertTrue( numpy.all( mtieTest.isWithinTolerance( fastMtie ) ), 
+                        'MTIE observations not equivalent' )
         
 
-    def testMultiprocessMtie(self):
+    def testMultiprocessMtie( self ):
         timeStepSeconds = 1 / 16
-        numberSamples = 1000
+        numberSamples = 10000
         
         numberObservations = 15
         
         clockFfoPpb = 16
         clockRmsJitterPpb = 3.0
         
-        referenceTimeGenerator = st.referenceGenerator(timeStepSeconds)
-        referenceTimeSeconds = referenceTimeGenerator.generate(numberSamples)
+        referenceTimeGenerator = st.referenceGenerator( timeStepSeconds )
+        referenceTimeSeconds = referenceTimeGenerator.generate( numberSamples )
         
-        clockModel = sc.Model(initialFfoPpb = clockFfoPpb, rmsJitterPpb = clockRmsJitterPpb)
+        clockModel = sc.Model( initialFfoPpb = clockFfoPpb, rmsJitterPpb = clockRmsJitterPpb )
         
-        localTimeSeconds, instantaneousLoFfoPpb = clockModel.calculateOffset(referenceTimeSeconds)
+        localTimeSeconds, instantaneousLoFfoPpb = clockModel.calculateOffset( referenceTimeSeconds )
         
-        directMtie, directObservationIntervals = sag810.calculateMtie(localTimeSeconds, 
+        t1 = time.clock()
+        directMtie, directObservationIntervals = sag810.calculateMtie( localTimeSeconds, 
                                                                       referenceTimeSeconds, 
                                                                       timeStepSeconds, 
-                                                                      numberObservations)
+                                                                      numberObservations )
+        t = time.clock() - t1
+        
         # Test the multiprocessing MTIE calculation
-        fastMtie, fastObservationIntervals = samtie.calculateMtie(localTimeSeconds, 
+        ft1 = time.clock()
+        fastMtie, fastObservationIntervals = samtie.calculateMtie( localTimeSeconds, 
                                                                   referenceTimeSeconds, 
                                                                   timeStepSeconds, 
-                                                                  numberObservations)
+                                                                  numberObservations, maximumNumberWorkers = 4 )
+        ft = time.clock() - ft1
         
-        self.assertTrue(len(directMtie) == len(fastMtie), 
-                        'MTIE data lengths not equal')
-        self.assertTrue(len(directObservationIntervals) == len(fastObservationIntervals), 
+        self.assertTrue( len( directMtie ) == len( fastMtie ), 
+                        'MTIE data lengths not equal' )
+        self.assertTrue( len( directObservationIntervals ) == len( fastObservationIntervals ), 
                         'MTIE observation interval lengths not equal')
         
-        self.assertTrue(numpy.all(directObservationIntervals == fastObservationIntervals), 
-                        'MTIE observations intervals not equal')
+        self.assertTrue( numpy.all( directObservationIntervals == fastObservationIntervals ), 
+                        'MTIE observations intervals not equal' )
         
-        mtieTest = spt.ToleranceValue(directMtie, 0.1, spt.ToleranceUnit['percent'])
-        self.assertTrue(numpy.all(mtieTest.isWithinTolerance(fastMtie)), 
-                        'MTIE observations not equivalent')
+        mtieTest = spt.ToleranceValue( directMtie, 0.1, spt.ToleranceUnit[ 'percent' ] )
+        self.assertTrue( numpy.all( mtieTest.isWithinTolerance( fastMtie ) ), 
+                        'MTIE observations not equivalent' )
 
 
 if __name__ == "__main__":
