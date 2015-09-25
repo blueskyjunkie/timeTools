@@ -21,6 +21,9 @@ import unittest
 
 if __name__ == '__main__':
     thisDir = os.path.dirname( os.path.realpath( __file__ ) )
+    
+    mpp.ion()
+    
     testsuite = unittest.TestLoader().discover( os.path.join( thisDir, 'tests' ) )
     unittest.TextTestRunner( verbosity = 1 ).run( testsuite )
     
