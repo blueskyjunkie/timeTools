@@ -23,30 +23,34 @@ import timeTools.signalProcessing.tolerance as spt
 import timeTools.synchronization.analysis.mtieKernels as tsam
 
 
-class TestMtieKernels (unittest.TestCase):
+class TestMtieKernels( unittest.TestCase ):
 
-    def testSlidingWindow (self):
-        expectedMtie = 1.73205080757
+    def testSlidingWindow( self ):
+        expectedMtie = 1.8508331568
         
-        timebase = numpy.linspace(0, 2 * numpy.pi, 10)
-        signal = numpy.sin(timebase)
+        timebase = numpy.linspace( 0, ( 2 * numpy.pi ), 10 )
+        signal = numpy.sin( timebase )
 
-        actualMtie = tsam.slidingWindow(signal, 4)
+        actualMtie = tsam.slidingWindow( signal, 4 )
 
-        thisTolerance = spt.ToleranceValue(expectedMtie, 1e-11, spt.ToleranceUnit['relative'])
-        self.assertTrue(thisTolerance.isWithinTolerance(actualMtie), 'Unexpected MTIE result')
+        thisTolerance = spt.ToleranceValue( expectedMtie, 1e-11, spt.ToleranceUnit[ 'relative' ] )
+        self.assertTrue( thisTolerance.isWithinTolerance( actualMtie ), 
+                         'Unexpected MTIE result: ' + str( expectedMtie ) + ' (expected), ' 
+                         + str( actualMtie ) + ' (actual)' )
         
 
-    def testSmartWindow (self):
-        expectedMtie = 1.73205080757
+    def testSmartWindow( self ):
+        expectedMtie = 1.8508331568
         
-        timebase = numpy.linspace(0, 2 * numpy.pi, 10)
-        signal = numpy.sin(timebase)
+        timebase = numpy.linspace( 0, ( 2 * numpy.pi ), 10 )
+        signal = numpy.sin( timebase )
 
-        actualMtie = tsam.smartWindow(signal, 4)
+        actualMtie = tsam.smartWindow( signal, 4 )
 
-        thisTolerance = spt.ToleranceValue(expectedMtie, 1e-11, spt.ToleranceUnit['relative'])
-        self.assertTrue(thisTolerance.isWithinTolerance(actualMtie), 'Unexpected MTIE result')
+        thisTolerance = spt.ToleranceValue( expectedMtie, 1e-11, spt.ToleranceUnit[ 'relative' ] )
+        self.assertTrue( thisTolerance.isWithinTolerance( actualMtie ), 
+                        'Unexpected MTIE result: ' + str( expectedMtie ) + ' (expected), ' 
+                         + str( actualMtie ) + ' (actual)' )
 
 
 if __name__ == "__main__":
