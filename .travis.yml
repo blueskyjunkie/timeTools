@@ -14,7 +14,7 @@ before_install:
   - conda info -a
 # Install packages
 install:
-  - conda install --yes python=$TRAVIS_PYTHON_VERSION pip atlas numpy scipy matplotlib pandas statsmodels
+  - conda install --yes python=$TRAVIS_PYTHON_VERSION pip atlas numpy scipy matplotlib
   - pip install coveralls nose
 
 # Run test
