@@ -21,10 +21,11 @@ import unittest
 
 if __name__ == '__main__':
     thisDir = os.path.dirname( os.path.realpath( __file__ ) )
+    testDir = os.path.join( 'timeTools', 'tests' )
     
     mpp.ion()
     
-    testsuite = unittest.TestLoader().discover( os.path.join( thisDir, 'tests' ) )
+    testsuite = unittest.TestLoader().discover( os.path.join( thisDir, testDir ) )
     unittest.TextTestRunner( verbosity = 1 ).run( testsuite )
     
     # Showing all plots is to be deferred until here 
