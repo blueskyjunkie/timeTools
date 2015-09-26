@@ -100,6 +100,8 @@ class TestMtie( unittest.TestCase ):
                                                                   numberObservations, maximumNumberWorkers = 4 )
         ft = time.clock() - ft1
         
+        self.assertTrue( ( ft < t ), 
+                         'Fast MTIE isn\'t fast: ' + str( t ) + ' (direct), ' + repr( ft ) + ' (fast)' )
         self.assertTrue( len( directMtie ) == len( fastMtie ), 
                         'MTIE data lengths not equal' )
         self.assertTrue( len( directObservationIntervals ) == len( fastObservationIntervals ), 
