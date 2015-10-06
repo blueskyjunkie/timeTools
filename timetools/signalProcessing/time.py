@@ -16,6 +16,7 @@
 '''
 
 import math
+import time
 
 
 def printTime (elapsedTimeSeconds):
@@ -38,3 +39,39 @@ def printTime (elapsedTimeSeconds):
         timeText = repr(elapsedTimeSeconds) + ' s'
         
     return timeText
+
+
+class StopWatch:
+    
+    def __init__( self ):
+        self._timers = []
+        self._lastTime = self._startTime
+        
+        self._timers.append( time.time() )
+        
+        
+    def showElapsed( self, thisMessage ):
+        currentTime = time.time()
+        self.timers.append( currentTime )
+
+        elapsedTime = currentTime - self._lastTime
+        
+        print( thisMessage + printTime( elapsedTime ) )
+        
+        self._lastTime = currentTime
+        
+        
+    def showTotal( self, thisMessage ):
+        currentTime = time.time()
+        elapsedTime = currentTime - self._timers[0]
+        
+        print( thisMessage + printTime( elapsedTime ) )
+        
+        
+    def recordTimer( self ):
+        self.timers.append( time.time() )
+        
+        
+    def reportTimers( self ):
+        return self._timers
+    
