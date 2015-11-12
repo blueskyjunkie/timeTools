@@ -19,6 +19,25 @@ import logging
 import numpy
 
 
+class NoiseModel:
+
+    def __init__( self, seed = None ):
+        self.randomState = numpy.random.RandomState( seed = seed )
+
+
+class GaussianNoise( NoiseModel ):
+
+    def __init__( self, standardDeviationPpb = 1, seed = None ):
+        super().__init__( seed )
+        self._standardDeviationPpb = standardDeviationPpb
+
+
+    def generate( self, referenceTimeSeconds ):
+        thisNoise = self.randomState.normal( scale = self._standardDeviationPpb, size = referenceTimeSeconds.shape )
+
+        return thisNoise
+
+
 class LinearAging:
 
     def __init__( self, agingRatePpbPerDay, initialAgePpb = 0, initialAgeTimeSeconds = 0 ):
@@ -53,10 +72,11 @@ class LinearTemperatureSensitivity:
 
 class OscillatorModel:
 
-    def __init__( self, initialFfoPpb = 0, agingModel = None, temperatureSensitivityModel = None ):
+    def __init__( self, initialFfoPpb = 0, agingModel = None, temperatureSensitivityModel = None, noiseModel = None ):
         self._initialFfoPpb = initialFfoPpb
         self._agingModel = agingModel
         self._temperatureSensitivityModel = temperatureSensitivityModel
+        self._noiseModel = noiseModel
 
 
     def generate( self, referenceTimeSeconds, referenceTemperatureKelvin = None ):
@@ -65,6 +85,9 @@ class OscillatorModel:
 
         if self._agingModel is not None:
             ffoPpb += self._agingModel.generate( referenceTimeSeconds )
+
+        if self._noiseModel is not None:
+            ffoPpb += self._noiseModel.generate( referenceTimeSeconds )
 
         if self._temperatureSensitivityModel is not None and referenceTemperatureKelvin is not None:
             assert( numpy.all( referenceTemperatureKelvin.shape == referenceTemperatureKelvin.shape ) )

@@ -18,6 +18,7 @@
 import numpy
 import unittest
 
+import timetools.signalProcessing.tolerance as tspt
 import timetools.synchronization.oscillator as tso
 
 
@@ -174,6 +175,20 @@ class TestClock (unittest.TestCase):
                          ( "Unexpected FFO from oscillator model: "
                            + repr( actualFfoPpb ) + " (actual) "
                            + repr( expectedFfoPpb ) + " (expected)" ) )
+
+
+    def testNoiseModel1( self ):
+        thisNoiseModel = tso.GaussianNoise( seed = 31415 )
+
+        expectedFfoPpb = numpy.array( [ 1.36242188,  1.13410818,  2.36307449 ] )
+
+        actualFfoPpb = thisNoiseModel.generate( numpy.array( [ 1, 2, 3 ] ) )
+
+        thisTolerance = tspt.ToleranceValue( expectedFfoPpb, 1e-6, tspt.ToleranceUnit[ 'relative' ] )
+        self.assertTrue( thisTolerance.isWithinTolerance( actualFfoPpb ),
+                         ( 'Result not wihin tolerance '
+                           + repr( actualFfoPpb ) + ' (actual) '
+                           + repr( expectedFfoPpb ) + ' (expected)' ) )
 
 
 if __name__ == "__main__":
