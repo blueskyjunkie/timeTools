@@ -16,57 +16,61 @@
 '''
 
 import numpy
-import numpy.random as nr
 
 
 class Model:
     '''
-    A simple clock model with initial static offset and optional Gaussian frequency 
-    jitter. The initial time offset is assumed to be zero.
-    
-    The frequency offset and resulting time offset are returned by 
-    calculateOffset. calculateOffset is iterative so that subsequent calls to 
-    calculateOffset calculate the offset relative to the last call.
+        A simple clock model with initial static offset and optional Gaussian frequency
+        jitter. The initial time offset is assumed to be zero.
+
+        The frequency offset and resulting time offset are returned by
+        calculateOffset. calculateOffset is iterative so that subsequent calls to
+        calculateOffset calculate the offset relative to the last call.
     '''
     
-    def __init__ (self, rmsJitterPpb = 0, initialFfoPpb = 0, initialTimeOffsetSeconds = 0, initialReferenceTimeSeconds = 0, randomSeed = None):
-        self._initialFfoPpb = initialFfoPpb
-        self._rmsJitterPpb = rmsJitterPpb
-        
+    def __init__( self, oscillatorModel, initialTimeOffsetSeconds = 0, initialReferenceTimeSeconds = 0, initialReferenceTemperatureKelvin = 0 ):
         # Support iterative use of the model by retaining relevant data from the previous iteration.
-        self._lastReferenceTimeSeconds = numpy.array([initialReferenceTimeSeconds])
+        self._lastReferenceTimeSeconds = numpy.array( [ initialReferenceTimeSeconds ] )
+        self._lastReferenceTemperatureKelvin = numpy.array( [ initialReferenceTemperatureKelvin ] )
         self._lastTimeOffsetSeconds = initialTimeOffsetSeconds
-        self._lastFfoPpb = initialFfoPpb
+        self._lastInstantaneousFfoPpb = numpy.array( [ oscillatorModel._initialFfoPpb ] )
+
+        self._oscillatorModel = oscillatorModel
         
-        self._randomGenerator = None
-        if randomSeed is not None:
-            # Assume randomSeed is a 32 bit integer
-            self._randomGenerator = nr.RandomState(randomSeed)
-        else:
-            self._randomGenerator = nr.RandomState()
-        
-        
-    def calculateOffset (self, referenceTimeSeconds):
+
+    def calculateOffset( self, referenceTimeSeconds, referenceTemperatureKelvin = None ):
         # If there is any time delta between self._lastReferenceTimeSeconds and referenceTimeSeconds[0]
         # then this must be accounted for in the skew and subsequent time integration calculation.
-        timeDelta = numpy.diff(numpy.concatenate( (self._lastReferenceTimeSeconds, referenceTimeSeconds) ))
-        numberDeltaSamples = len(timeDelta)
-        
-        jitterPpb = 0
-        if self._rmsJitterPpb != 0:
-            jitterPpb = self._randomGenerator.normal(scale = self._rmsJitterPpb, size = numberDeltaSamples)
+        timeDelta = numpy.diff( numpy.concatenate( ( self._lastReferenceTimeSeconds, referenceTimeSeconds ) ) )
+
+        thisIterationReferenceTime = referenceTimeSeconds[ : ( len( referenceTimeSeconds ) - 1 ) ]
+        thisIterationReferenceTemperature = None
+        if referenceTemperatureKelvin is not None:
+            thisIterationReferenceTemperature = referenceTemperatureKelvin[ : ( len( referenceTemperatureKelvin ) - 1 ) ]
             
-        instantaneousLoFfoPpb = (self._initialFfoPpb * numpy.ones(numberDeltaSamples)) + jitterPpb
+        loFfoPpb = \
+            self._oscillatorModel.generate(
+                thisIterationReferenceTime,
+                thisIterationReferenceTemperature )
         # Make sure that the FFO from the previous iteration is accurately accounted for.
-        instantaneousLoFfoPpb[0] = self._lastFfoPpb
-        
-        timeChange = (timeDelta * instantaneousLoFfoPpb * 1e-9) + timeDelta
-        
-        localTimeSeconds = self._lastTimeOffsetSeconds + numpy.cumsum(timeChange)
+        instantaneousLoFfoPpb = self._lastInstantaneousFfoPpb
+        if loFfoPpb != []:
+            instantaneousLoFfoPpb = numpy.concatenate( ( self._lastInstantaneousFfoPpb, loFfoPpb ) )
+
+        assert ( instantaneousLoFfoPpb.shape == timeDelta.shape )
+
+        timeChange = ( timeDelta * instantaneousLoFfoPpb * 1e-9 ) + timeDelta
+        localTimeSeconds = self._lastTimeOffsetSeconds + numpy.cumsum( timeChange )
+
+        assert ( localTimeSeconds.shape == referenceTimeSeconds.shape )
         
         self._lastTimeOffsetSeconds = localTimeSeconds[-1]
-        self._lastFfoPpb = instantaneousLoFfoPpb[-1]
-        self._lastReferenceTimeSeconds = numpy.array([referenceTimeSeconds[-1] ])
+        self._lastInstantaneousFfoPpb = numpy.array( [ instantaneousLoFfoPpb[-1] ] )
+        # Make this a numpy array even though it is only a single scalar so that numpy concatenation works for
+        # timeDelta calculation.
+        self._lastReferenceTimeSeconds = numpy.array( [ referenceTimeSeconds[-1] ] )
+        if referenceTemperatureKelvin is not None:
+            self._lastReferenceTemperatureKelvin = numpy.array( [ referenceTemperatureKelvin[-1] ] )
         
         return localTimeSeconds, instantaneousLoFfoPpb
     
