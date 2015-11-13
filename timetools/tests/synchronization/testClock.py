@@ -90,6 +90,45 @@ class TestClock( unittest.TestCase ):
                          'Timebases not equivalent' )
 
 
+    def testClock4( self ):
+        timeStepSeconds = 1 / 16
+        numberSamples = 10
+
+        initialFfoPpb = 100e3
+
+        expectedLocalTimeSeconds = numpy.array( [ 0.0, 0.06250625, 0.1250125, 0.18751875, 0.250025, 0.31253125,
+                                                0.3750375, 0.43754375, 0.50005, 0.56255625] )
+        referenceTimeGenerator = st.referenceGenerator( timeStepSeconds )
+        referenceTimeSeconds = referenceTimeGenerator.generate( numberSamples )
+
+        expectedTimeErrorSeconds = sag810.calculateTimeError( expectedLocalTimeSeconds, referenceTimeSeconds )
+
+        clockModel = tsc.Model( tso.OscillatorModel( initialFfoPpb = initialFfoPpb ) )
+
+        actualLocalTimeSeconds = numpy.array( [] )
+        instantaneousLoFfoPpb = numpy.array( [] )
+        for i in range(0, 2):
+            thisIterationReferenceTimeSeconds = referenceTimeSeconds[:5]
+            if i == 1:
+                thisIterationReferenceTimeSeconds = referenceTimeSeconds[5:]
+
+            thisIterationActualLocalTimeSeconds, thisIterationInstantaneousLoFfoPpb = \
+                clockModel.calculateOffset( thisIterationReferenceTimeSeconds )
+
+            actualLocalTimeSeconds = numpy.concatenate( ( actualLocalTimeSeconds, thisIterationActualLocalTimeSeconds ) )
+            instantaneousLoFfoPpb = numpy.concatenate( ( instantaneousLoFfoPpb, thisIterationInstantaneousLoFfoPpb ) )
+
+        actualTimeErrorSeconds = sag810.calculateTimeError( actualLocalTimeSeconds, referenceTimeSeconds )
+
+        self.assertTrue( numpy.all( instantaneousLoFfoPpb == initialFfoPpb),
+                         ( 'Unexpected FFO: '
+                           + repr( instantaneousLoFfoPpb ) + ' (actual) '
+                           + repr( numpy.ones( instantaneousLoFfoPpb.shape ) * initialFfoPpb ) + ' (expected)' ) )
+        thisTolerance = spt.ToleranceValue( expectedTimeErrorSeconds, 1e-6, spt.ToleranceUnit[ 'relative' ] )
+        self.assertTrue( numpy.all( thisTolerance.isWithinTolerance( actualTimeErrorSeconds ) ),
+                         'Timebases not equivalent' )
+
+
     def testClockRandomSeed( self ):
         timeStepSeconds = 1 / 16
         numberSamples = 10
