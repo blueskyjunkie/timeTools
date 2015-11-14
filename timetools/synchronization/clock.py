@@ -38,7 +38,7 @@ class Model:
         self._oscillatorModel = oscillatorModel
         
 
-    def calculateOffset( self, referenceTimeSeconds, referenceTemperatureKelvin = None ):
+    def generate( self, referenceTimeSeconds, referenceTemperatureKelvin = None ):
         # If there is any time delta between self._lastReferenceTimeSeconds and referenceTimeSeconds[0]
         # then this must be accounted for in the skew and subsequent time integration calculation.
         timeDelta = numpy.diff( numpy.concatenate( ( self._lastReferenceTimeSeconds, referenceTimeSeconds ) ) )

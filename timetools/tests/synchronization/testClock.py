@@ -113,7 +113,7 @@ class TestClock( unittest.TestCase ):
                 thisIterationReferenceTimeSeconds = referenceTimeSeconds[5:]
 
             thisIterationActualLocalTimeSeconds, thisIterationInstantaneousLoFfoPpb = \
-                clockModel.calculateOffset( thisIterationReferenceTimeSeconds )
+                clockModel.generate( thisIterationReferenceTimeSeconds )
 
             actualLocalTimeSeconds = numpy.concatenate( ( actualLocalTimeSeconds, thisIterationActualLocalTimeSeconds ) )
             instantaneousLoFfoPpb = numpy.concatenate( ( instantaneousLoFfoPpb, thisIterationInstantaneousLoFfoPpb ) )
@@ -147,9 +147,9 @@ class TestClock( unittest.TestCase ):
         clockModel3 = tsc.Model(
             tso.OscillatorModel( initialFfoPpb = initialFfoPpb, noiseModel = tso.GaussianNoise( seed = 5986 ) ) )
         
-        actualLocalTimeSeconds1, instantaneousLoFfoPpb1 = clockModel1.calculateOffset( referenceTimeSeconds )
-        actualLocalTimeSeconds2, instantaneousLoFfoPpb2 = clockModel2.calculateOffset( referenceTimeSeconds )
-        actualLocalTimeSeconds3, instantaneousLoFfoPpb3 = clockModel3.calculateOffset( referenceTimeSeconds )
+        actualLocalTimeSeconds1, instantaneousLoFfoPpb1 = clockModel1.generate( referenceTimeSeconds )
+        actualLocalTimeSeconds2, instantaneousLoFfoPpb2 = clockModel2.generate( referenceTimeSeconds )
+        actualLocalTimeSeconds3, instantaneousLoFfoPpb3 = clockModel3.generate( referenceTimeSeconds )
         
         self.assertTrue( numpy.all( instantaneousLoFfoPpb1 == instantaneousLoFfoPpb2 ),
                          'Instantaneous FFO with identical seed not the same' )
