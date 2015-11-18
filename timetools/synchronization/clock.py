@@ -18,6 +18,33 @@
 import numpy
 
 
+def calculateLocalTimeFromFfo(
+        referenceTimeSeconds,
+        loFfoPpb,
+        initialFfoPpb = 0,
+        initialReferenceTimeSeconds = 0,
+        initialLocalTimeSeconds = 0 ):
+    assert ( loFfoPpb.shape == referenceTimeSeconds.shape )
+
+    # Make sure that the FFO from a previous iteration is accurately accounted for.
+    initialFfoArray = numpy.array( [ initialFfoPpb ] )
+    if loFfoPpb != []:
+        instantaneousFfoPpb = numpy.concatenate( ( initialFfoArray, loFfoPpb[ : ( len( loFfoPpb ) - 1 ) ] ) )
+    else:
+        instantaneousFfoPpb = initialFfoArray
+
+    timeDelta = numpy.diff( numpy.concatenate( ( numpy.array( [ initialReferenceTimeSeconds ] ), referenceTimeSeconds ) ) )
+
+    assert ( instantaneousFfoPpb.shape == timeDelta.shape )
+
+    timeChange = ( timeDelta * instantaneousFfoPpb * 1e-9 ) + timeDelta
+    localTimeSeconds = numpy.array( [ initialLocalTimeSeconds ] ) + numpy.cumsum( timeChange )
+
+    assert ( localTimeSeconds.shape == referenceTimeSeconds.shape )
+
+    return localTimeSeconds
+
+
 class Model:
     '''
         A simple clock model with initial static offset and optional Gaussian frequency
@@ -30,47 +57,37 @@ class Model:
     
     def __init__( self, oscillatorModel, initialTimeOffsetSeconds = 0, initialReferenceTimeSeconds = 0, initialReferenceTemperatureKelvin = 0 ):
         # Support iterative use of the model by retaining relevant data from the previous iteration.
-        self._lastReferenceTimeSeconds = numpy.array( [ initialReferenceTimeSeconds ] )
-        self._lastReferenceTemperatureKelvin = numpy.array( [ initialReferenceTemperatureKelvin ] )
-        self._lastTimeOffsetSeconds = initialTimeOffsetSeconds
-        self._lastInstantaneousFfoPpb = numpy.array( [ oscillatorModel._initialFfoPpb ] )
+        self._lastReferenceTimeSeconds = initialReferenceTimeSeconds
+        self._lastReferenceTemperatureKelvin = initialReferenceTemperatureKelvin
+        self._lastLocalTimeOffsetSeconds = initialTimeOffsetSeconds
+        self._lastInstantaneousFfoPpb = oscillatorModel._initialFfoPpb
 
         self._oscillatorModel = oscillatorModel
         
 
     def generate( self, referenceTimeSeconds, referenceTemperatureKelvin = None ):
-        # If there is any time delta between self._lastReferenceTimeSeconds and referenceTimeSeconds[0]
-        # then this must be accounted for in the skew and subsequent time integration calculation.
-        timeDelta = numpy.diff( numpy.concatenate( ( self._lastReferenceTimeSeconds, referenceTimeSeconds ) ) )
-
-        thisIterationReferenceTime = referenceTimeSeconds[ : ( len( referenceTimeSeconds ) - 1 ) ]
-        thisIterationReferenceTemperature = None
-        if referenceTemperatureKelvin is not None:
-            thisIterationReferenceTemperature = referenceTemperatureKelvin[ : ( len( referenceTemperatureKelvin ) - 1 ) ]
-            
         loFfoPpb = \
             self._oscillatorModel.generate(
-                thisIterationReferenceTime,
-                thisIterationReferenceTemperature )
-        # Make sure that the FFO from the previous iteration is accurately accounted for.
-        instantaneousLoFfoPpb = self._lastInstantaneousFfoPpb
-        if loFfoPpb != []:
-            instantaneousLoFfoPpb = numpy.concatenate( ( self._lastInstantaneousFfoPpb, loFfoPpb ) )
+                referenceTimeSeconds,
+                referenceTemperatureKelvin )
 
-        assert ( instantaneousLoFfoPpb.shape == timeDelta.shape )
-
-        timeChange = ( timeDelta * instantaneousLoFfoPpb * 1e-9 ) + timeDelta
-        localTimeSeconds = self._lastTimeOffsetSeconds + numpy.cumsum( timeChange )
-
-        assert ( localTimeSeconds.shape == referenceTimeSeconds.shape )
+        # If there is any time delta between self._lastReferenceTimeSeconds and referenceTimeSeconds[0]
+        # then this must be accounted for in the skew and subsequent time integration calculation.
+        localTimeSeconds = \
+            calculateLocalTimeFromFfo(
+                referenceTimeSeconds,
+                loFfoPpb,
+                self._lastInstantaneousFfoPpb,
+                self._lastReferenceTimeSeconds,
+                self._lastLocalTimeOffsetSeconds )
         
-        self._lastTimeOffsetSeconds = localTimeSeconds[-1]
-        self._lastInstantaneousFfoPpb = numpy.array( [ instantaneousLoFfoPpb[-1] ] )
+        self._lastLocalTimeOffsetSeconds = localTimeSeconds[-1]
+        self._lastInstantaneousFfoPpb = loFfoPpb[-1]
         # Make this a numpy array even though it is only a single scalar so that numpy concatenation works for
         # timeDelta calculation.
-        self._lastReferenceTimeSeconds = numpy.array( [ referenceTimeSeconds[-1] ] )
+        self._lastReferenceTimeSeconds = referenceTimeSeconds[-1]
         if referenceTemperatureKelvin is not None:
-            self._lastReferenceTemperatureKelvin = numpy.array( [ referenceTemperatureKelvin[-1] ] )
+            self._lastReferenceTemperatureKelvin = referenceTemperatureKelvin[-1]
         
-        return localTimeSeconds, instantaneousLoFfoPpb
+        return localTimeSeconds, loFfoPpb
     

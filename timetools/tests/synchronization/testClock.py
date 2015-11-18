@@ -28,6 +28,59 @@ import timetools.synchronization.clock as tsc
 
 class TestClock( unittest.TestCase ):
 
+    def testCalculateLocalTimeFromFfo1( self ):
+        referenceTimeSeconds = numpy.array( [ 1, 2, 3 ] )
+        ffoPpb = numpy.array( [ 3, -6, 9 ] ) * 1e8
+
+        expectedLocalTimeSeconds = numpy.array( [ 1, 2.3, 2.7 ] )
+        actualLocalTimeSeconds = tsc.calculateLocalTimeFromFfo( referenceTimeSeconds, ffoPpb )
+
+        thisTolerance = spt.ToleranceValue( expectedLocalTimeSeconds, 1e-6, spt.ToleranceUnit[ 'relative' ] )
+        self.assertTrue( thisTolerance.isWithinTolerance( actualLocalTimeSeconds ),
+                         ( "Unexpected local time: "
+                           + repr( actualLocalTimeSeconds ) + " (actual) "
+                           + repr( expectedLocalTimeSeconds ) + " (expected)" ) )
+
+    def testCalculateLocalTimeFromFfo2( self ):
+        initialConditions = [ numpy.array( [ 0, 0, 0 ] ) , numpy.array( [ 9*1e8, 3, 2.7 ] ) ]
+        referenceTimeSeconds = [ numpy.array( [ 1, 2, 3 ] ), numpy.array( [ 4, 5, 6, 7 ] ) ]
+        ffoPpb = [ numpy.array( [ 3, -6, 9 ] ) * 1e8, numpy.array( [ 1, -2, 4, 0 ] ) * 1e8 ]
+
+        expectedLocalTimeSeconds = [ numpy.array( [ 1, 2.3, 2.7 ] ), numpy.array( [ 4.6, 5.7, 6.5, 7.9 ] ) ]
+
+        concatenatedReferenceTimeSeconds = numpy.concatenate( ( referenceTimeSeconds[0], referenceTimeSeconds[1] ) )
+        concatenatedFfoPpb = numpy.concatenate( ( ffoPpb[0], ffoPpb[1] ) )
+        concatenatedExpectedLocalTimeSeconds = numpy.concatenate( ( expectedLocalTimeSeconds[0], expectedLocalTimeSeconds[1] ) )
+        actualConcatenatedLocalTimeSeconds = \
+            tsc.calculateLocalTimeFromFfo(
+                concatenatedReferenceTimeSeconds,
+                concatenatedFfoPpb,
+                initialConditions[0][0],
+                initialConditions[0][1],
+                initialConditions[0][2] )
+
+        concatenatedTolerance = spt.ToleranceValue( concatenatedExpectedLocalTimeSeconds, 1e-6, spt.ToleranceUnit[ 'relative' ] )
+        self.assertTrue( concatenatedTolerance.isWithinTolerance( actualConcatenatedLocalTimeSeconds ),
+                         ( "Unexpected concatenated local time: "
+                           + repr( actualConcatenatedLocalTimeSeconds ) + " (actual) "
+                           + repr( concatenatedExpectedLocalTimeSeconds ) + " (expected)" ) )
+
+        for i in range(2):
+            actualLocalTimeSeconds = \
+                tsc.calculateLocalTimeFromFfo(
+                    referenceTimeSeconds[i],
+                    ffoPpb[i],
+                    initialConditions[i][0],
+                    initialConditions[i][1],
+                    initialConditions[i][2] )
+
+            thisTolerance = spt.ToleranceValue( expectedLocalTimeSeconds[i], 1e-6, spt.ToleranceUnit[ 'relative' ] )
+            self.assertTrue( thisTolerance.isWithinTolerance( actualLocalTimeSeconds ),
+                             ( "Unexpected local time (" + repr(i) + "): "
+                               + repr( actualLocalTimeSeconds ) + " (actual) "
+                               + repr( expectedLocalTimeSeconds[i] ) + " (expected)" ) )
+
+
     def testClock1( self ):
         timeStepSeconds = 1 / 16
         numberSamples = 10
@@ -37,7 +90,7 @@ class TestClock( unittest.TestCase ):
         
         clockModel = tsc.Model( tso.OscillatorModel() )
         
-        localTimeSeconds, instantaneousLoFfoPpb = clockModel.calculateOffset( referenceTimeSeconds )
+        localTimeSeconds, instantaneousLoFfoPpb = clockModel.generate( referenceTimeSeconds )
         
         self.assertTrue( numpy.all( localTimeSeconds == referenceTimeSeconds ), 'Timebases not equivalent' )
         self.assertTrue( numpy.all( instantaneousLoFfoPpb == 0 ), 'Instantaneous FFO not zero' )
@@ -55,7 +108,7 @@ class TestClock( unittest.TestCase ):
         localTimeSeconds = numpy.array([])
         instantaneousLoFfoPpb = numpy.array([])
         for thisTime in referenceTimeSeconds:
-            thisLocalTimeSeconds, thisInstantaneousLoFfoPpb = clockModel.calculateOffset( numpy.array( [ thisTime ] ) )
+            thisLocalTimeSeconds, thisInstantaneousLoFfoPpb = clockModel.generate( numpy.array( [ thisTime ] ) )
             localTimeSeconds = numpy.concatenate( ( localTimeSeconds, thisLocalTimeSeconds ) )
             instantaneousLoFfoPpb = numpy.concatenate( ( instantaneousLoFfoPpb, thisInstantaneousLoFfoPpb ) )
         
@@ -78,7 +131,7 @@ class TestClock( unittest.TestCase ):
         
         clockModel = tsc.Model( tso.OscillatorModel( initialFfoPpb = initialFfoPpb ) )
         
-        actualLocalTimeSeconds, instantaneousLoFfoPpb = clockModel.calculateOffset( referenceTimeSeconds )
+        actualLocalTimeSeconds, instantaneousLoFfoPpb = clockModel.generate( referenceTimeSeconds )
         actualTimeErrorSeconds = sag810.calculateTimeError( actualLocalTimeSeconds, referenceTimeSeconds )
         
         self.assertTrue( numpy.all( instantaneousLoFfoPpb == initialFfoPpb),
