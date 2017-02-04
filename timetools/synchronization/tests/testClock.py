@@ -22,6 +22,7 @@ import unittest
 
 import timetools.synchronization.analysis.ituTG810 as sag810
 import timetools.synchronization.oscillator as tso
+import timetools.synchronization.oscillator.noise.gaussian as tsong
 import timetools.synchronization.time as st
 import timetools.signalProcessing.tolerance as spt
 
@@ -90,7 +91,7 @@ class TestClock( unittest.TestCase ):
         referenceTimeGenerator = st.referenceGenerator( timeStepSeconds )
         referenceTimeSeconds = referenceTimeGenerator.generate( numberSamples )
         
-        clockModel = tsc.Model( tso.OscillatorModel() )
+        clockModel = tsc.ClockModel( tso.OscillatorModel( ) )
         
         localTimeSeconds, instantaneousLoFfoPpb = clockModel.generate( referenceTimeSeconds )
         
@@ -105,7 +106,7 @@ class TestClock( unittest.TestCase ):
         referenceTimeGenerator = st.referenceGenerator( timeStepSeconds )
         referenceTimeSeconds = referenceTimeGenerator.generate( numberSamples )
         
-        clockModel = tsc.Model( tso.OscillatorModel() )
+        clockModel = tsc.ClockModel( tso.OscillatorModel( ) )
         
         localTimeSeconds = numpy.array([])
         instantaneousLoFfoPpb = numpy.array([])
@@ -131,7 +132,7 @@ class TestClock( unittest.TestCase ):
         
         expectedTimeErrorSeconds = sag810.calculateTimeError( expectedLocalTimeSeconds, referenceTimeSeconds )
         
-        clockModel = tsc.Model( tso.OscillatorModel( initialFfoPpb = initialFfoPpb ) )
+        clockModel = tsc.ClockModel( tso.OscillatorModel( initialFfoPpb = initialFfoPpb ) )
         
         actualLocalTimeSeconds, instantaneousLoFfoPpb = clockModel.generate( referenceTimeSeconds )
         actualTimeErrorSeconds = sag810.calculateTimeError( actualLocalTimeSeconds, referenceTimeSeconds )
@@ -158,7 +159,7 @@ class TestClock( unittest.TestCase ):
 
         expectedTimeErrorSeconds = sag810.calculateTimeError( expectedLocalTimeSeconds, referenceTimeSeconds )
 
-        clockModel = tsc.Model( tso.OscillatorModel( initialFfoPpb = initialFfoPpb ) )
+        clockModel = tsc.ClockModel( tso.OscillatorModel( initialFfoPpb = initialFfoPpb ) )
 
         actualLocalTimeSeconds = numpy.array( [] )
         instantaneousLoFfoPpb = numpy.array( [] )
@@ -195,12 +196,15 @@ class TestClock( unittest.TestCase ):
         referenceTimeSeconds = referenceTimeGenerator.generate( numberSamples )
         
         # Two models with the same seed should generate the exact same sequence
-        clockModel1 = tsc.Model(
-            tso.OscillatorModel( initialFfoPpb = initialFfoPpb, noiseModel = tso.GaussianNoise( seed = 1459 ) ) )
-        clockModel2 = tsc.Model(
-            tso.OscillatorModel( initialFfoPpb = initialFfoPpb, noiseModel = tso.GaussianNoise( seed = 1459 ) ) )
-        clockModel3 = tsc.Model(
-            tso.OscillatorModel( initialFfoPpb = initialFfoPpb, noiseModel = tso.GaussianNoise( seed = 5986 ) ) )
+        clockModel1 = tsc.ClockModel(
+            tso.OscillatorModel( initialFfoPpb = initialFfoPpb,
+                                 noiseModel = tsong.GaussianNoise( seed = 1459 ) ) )
+        clockModel2 = tsc.ClockModel(
+            tso.OscillatorModel( initialFfoPpb = initialFfoPpb,
+                                 noiseModel = tsong.GaussianNoise( seed = 1459 ) ) )
+        clockModel3 = tsc.ClockModel(
+            tso.OscillatorModel( initialFfoPpb = initialFfoPpb,
+                                 noiseModel = tsong.GaussianNoise( seed = 5986 ) ) )
         
         actualLocalTimeSeconds1, instantaneousLoFfoPpb1 = clockModel1.generate( referenceTimeSeconds )
         actualLocalTimeSeconds2, instantaneousLoFfoPpb2 = clockModel2.generate( referenceTimeSeconds )

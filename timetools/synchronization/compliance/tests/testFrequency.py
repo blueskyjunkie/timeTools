@@ -20,97 +20,109 @@
 import unittest
 
 import timetools.synchronization.clock as sc
+import timetools.synchronization.oscillator as tso
+import timetools.synchronization.oscillator.noise.gaussian as tsong
 import timetools.synchronization.time as st
 
 import timetools.synchronization.compliance.frequency as tscf
 
 
-class TestFrequencyCompliance (unittest.TestCase):
-
-    def testFfo16Ppb1 (self):
+class TestFrequencyCompliance( unittest.TestCase ) :
+    def testFfo16Ppb1( self ) :
         timeStepSeconds = 1 / 16
         numberSamples = 1000
-        
+
         clockFfoPpb = 0
         clockRmsJitterPpb = 3.0
-        
-        referenceTimeGenerator = st.referenceGenerator(timeStepSeconds)
-        referenceTimeSeconds = referenceTimeGenerator.generate(numberSamples)
-        
-        clockModel = sc.Model(initialFfoPpb = clockFfoPpb, rmsJitterPpb = clockRmsJitterPpb)
-        
-        localTimeSeconds, instantaneousLoFfoPpb = clockModel.calculateOffset(referenceTimeSeconds)
-        
-        analysisResult = tscf.ffo16ppbMask.evaluate( (referenceTimeSeconds, instantaneousLoFfoPpb) )
-        
-        self.assertTrue(analysisResult, 'Failed 16 ppb mask when should not have')
-        
 
-    def testFfo16Ppb2 (self):
+        referenceTimeGenerator = st.referenceGenerator( timeStepSeconds )
+        referenceTimeSeconds = referenceTimeGenerator.generate( numberSamples )
+
+        clockModel = sc.ClockModel( tso.OscillatorModel( initialFfoPpb = clockFfoPpb,
+                                                         noiseModel = tsong.GaussianNoise(
+                                                             standardDeviationPpb = clockRmsJitterPpb,
+                                                             seed = 1459 ) ) )
+
+        localTimeSeconds, instantaneousLoFfoPpb = clockModel.generate( referenceTimeSeconds )
+
+        analysisResult = tscf.ffo16ppbMask.evaluate( (referenceTimeSeconds, instantaneousLoFfoPpb) )
+
+        self.assertTrue( analysisResult, 'Failed 16 ppb mask when should not have' )
+
+
+    def testFfo16Ppb2( self ) :
         timeStepSeconds = 1 / 16
         numberSamples = 1000
-        
+
         clockFfoPpb = 0
         clockRmsJitterPpb = 10
-        
-        referenceTimeGenerator = st.referenceGenerator(timeStepSeconds)
-        referenceTimeSeconds = referenceTimeGenerator.generate(numberSamples)
-        
-        clockModel = sc.Model(initialFfoPpb = clockFfoPpb, rmsJitterPpb = clockRmsJitterPpb)
-        
-        localTimeSeconds, instantaneousLoFfoPpb = clockModel.calculateOffset(referenceTimeSeconds)
-        
+
+        referenceTimeGenerator = st.referenceGenerator( timeStepSeconds )
+        referenceTimeSeconds = referenceTimeGenerator.generate( numberSamples )
+
+        clockModel = sc.ClockModel( tso.OscillatorModel( initialFfoPpb = clockFfoPpb,
+                                                         noiseModel = tsong.GaussianNoise(
+                                                             standardDeviationPpb = clockRmsJitterPpb,
+                                                             seed = 1459 ) ) )
+
+        localTimeSeconds, instantaneousLoFfoPpb = clockModel.generate( referenceTimeSeconds )
+
         analysisResult = tscf.ffo16ppbMask.evaluate( (referenceTimeSeconds, instantaneousLoFfoPpb) )
-        
-        self.assertFalse(analysisResult, 'Passed 16 ppb mask when should not have')
+
+        self.assertFalse( analysisResult, 'Passed 16 ppb mask when should not have' )
 
 
-    def testGenerateThresholdMask1 (self):
+    def testGenerateThresholdMask1( self ) :
         timeStepSeconds = 1 / 16
         numberSamples = 1000
-        
+
         clockFfoPpb = 0
         clockRmsJitterPpb = 0.2
-        
-        complianceThresholdPpb = 1.0
-        
-        thisMask = tscf.generateThresholdMask(complianceThresholdPpb)
-        
-        referenceTimeGenerator = st.referenceGenerator(timeStepSeconds)
-        referenceTimeSeconds = referenceTimeGenerator.generate(numberSamples)
-        
-        clockModel = sc.Model(initialFfoPpb = clockFfoPpb, rmsJitterPpb = clockRmsJitterPpb)
-        
-        localTimeSeconds, instantaneousLoFfoPpb = clockModel.calculateOffset(referenceTimeSeconds)
-        
-        analysisResult = thisMask.evaluate( (referenceTimeSeconds, instantaneousLoFfoPpb) )
-        
-        self.assertTrue(analysisResult, 'Failed 1 ppb mask when should not have')
-        
 
-    def testGenerateThresholdMask2 (self):
+        complianceThresholdPpb = 1.0
+
+        thisMask = tscf.generateThresholdMask( complianceThresholdPpb )
+
+        referenceTimeGenerator = st.referenceGenerator( timeStepSeconds )
+        referenceTimeSeconds = referenceTimeGenerator.generate( numberSamples )
+
+        clockModel = sc.ClockModel( tso.OscillatorModel( initialFfoPpb = clockFfoPpb,
+                                                         noiseModel = tsong.GaussianNoise(
+                                                             standardDeviationPpb = clockRmsJitterPpb,
+                                                             seed = 1459 ) ) )
+
+        localTimeSeconds, instantaneousLoFfoPpb = clockModel.generate( referenceTimeSeconds )
+
+        analysisResult = thisMask.evaluate( (referenceTimeSeconds, instantaneousLoFfoPpb) )
+
+        self.assertTrue( analysisResult, 'Failed 1 ppb mask when should not have' )
+
+
+    def testGenerateThresholdMask2( self ) :
         timeStepSeconds = 1 / 16
         numberSamples = 1000
-        
+
         clockFfoPpb = 0
         clockRmsJitterPpb = 3.0
-        
+
         complianceThresholdPpb = 1.0
-        
-        thisMask = tscf.generateThresholdMask(complianceThresholdPpb)
-        
-        referenceTimeGenerator = st.referenceGenerator(timeStepSeconds)
-        referenceTimeSeconds = referenceTimeGenerator.generate(numberSamples)
-        
-        clockModel = sc.Model(initialFfoPpb = clockFfoPpb, rmsJitterPpb = clockRmsJitterPpb)
-        
-        localTimeSeconds, instantaneousLoFfoPpb = clockModel.calculateOffset(referenceTimeSeconds)
-        
+
+        thisMask = tscf.generateThresholdMask( complianceThresholdPpb )
+
+        referenceTimeGenerator = st.referenceGenerator( timeStepSeconds )
+        referenceTimeSeconds = referenceTimeGenerator.generate( numberSamples )
+
+        clockModel = sc.ClockModel( tso.OscillatorModel( initialFfoPpb = clockFfoPpb,
+                                                         noiseModel = tsong.GaussianNoise(
+                                                             standardDeviationPpb = clockRmsJitterPpb,
+                                                             seed = 1459 ) ) )
+
+        localTimeSeconds, instantaneousLoFfoPpb = clockModel.generate( referenceTimeSeconds )
+
         analysisResult = thisMask.evaluate( (referenceTimeSeconds, instantaneousLoFfoPpb) )
-        
-        self.assertFalse(analysisResult, 'Passed 1 ppb mask when should not have')
+
+        self.assertFalse( analysisResult, 'Passed 1 ppb mask when should not have' )
 
 
-if __name__ == "__main__":
-    unittest.main()
-    
+if __name__ == "__main__" :
+    unittest.main( )

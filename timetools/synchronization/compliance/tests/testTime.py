@@ -21,53 +21,59 @@ import unittest
 
 import timetools.synchronization.analysis.ituTG810 as sag810
 import timetools.synchronization.clock as sc
+import timetools.synchronization.oscillator as tso
+import timetools.synchronization.oscillator.noise.gaussian as tsong
 import timetools.synchronization.time as st
 
 import timetools.synchronization.compliance.time as tsct
 
 
-class TestComplianceTime (unittest.TestCase):
-
-    def testComplianceTime1 (self):
+class TestComplianceTime( unittest.TestCase ) :
+    def testComplianceTime1( self ) :
         timeStepSeconds = 1 / 16
         numberSamples = 2000
-        
+
         clockFfoPpb = 0
         clockRmsJitterPpb = 3.0
-        
-        referenceTimeGenerator = st.referenceGenerator(timeStepSeconds)
-        referenceTimeSeconds = referenceTimeGenerator.generate(numberSamples)
-        
-        clockModel = sc.Model(initialFfoPpb = clockFfoPpb, rmsJitterPpb = clockRmsJitterPpb)
-        localTimeSeconds, instantaneousLoFfoPpb = clockModel.calculateOffset(referenceTimeSeconds)
-        
-        timeErrorMicroseconds = sag810.calculateTimeError(localTimeSeconds, referenceTimeSeconds) / 1e-6
-        
-        analysisResult = tsct.time1usMask.evaluate( (referenceTimeSeconds, timeErrorMicroseconds))
-        
-        self.assertTrue(analysisResult, '1us mask failed when it should not have')
-        
 
-    def testComplianceTime2 (self):
+        referenceTimeGenerator = st.referenceGenerator( timeStepSeconds )
+        referenceTimeSeconds = referenceTimeGenerator.generate( numberSamples )
+
+        clockModel = sc.ClockModel( tso.OscillatorModel( initialFfoPpb = clockFfoPpb,
+                                                         noiseModel = tsong.GaussianNoise(
+                                                             standardDeviationPpb = clockRmsJitterPpb,
+                                                             seed = 1459 ) ) )
+        localTimeSeconds, instantaneousLoFfoPpb = clockModel.generate( referenceTimeSeconds )
+
+        timeErrorMicroseconds = sag810.calculateTimeError( localTimeSeconds, referenceTimeSeconds ) / 1e-6
+
+        analysisResult = tsct.time1usMask.evaluate( (referenceTimeSeconds, timeErrorMicroseconds) )
+
+        self.assertTrue( analysisResult, '1us mask failed when it should not have' )
+
+
+    def testComplianceTime2( self ) :
         timeStepSeconds = 1 / 16
         numberSamples = 2000
-        
+
         clockFfoPpb = 10
         clockRmsJitterPpb = 3.0
-        
-        referenceTimeGenerator = st.referenceGenerator(timeStepSeconds)
-        referenceTimeSeconds = referenceTimeGenerator.generate(numberSamples)
-        
-        clockModel = sc.Model(initialFfoPpb = clockFfoPpb, rmsJitterPpb = clockRmsJitterPpb)
-        localTimeSeconds, instantaneousLoFfoPpb = clockModel.calculateOffset(referenceTimeSeconds)
-        
-        timeErrorMicroseconds = sag810.calculateTimeError(localTimeSeconds, referenceTimeSeconds) / 1e-6
-        
-        analysisResult = tsct.time1usMask.evaluate( (referenceTimeSeconds, timeErrorMicroseconds))
-        
-        self.assertFalse(analysisResult, '1us mask passed when it should not have')
+
+        referenceTimeGenerator = st.referenceGenerator( timeStepSeconds )
+        referenceTimeSeconds = referenceTimeGenerator.generate( numberSamples )
+
+        clockModel = sc.ClockModel( tso.OscillatorModel( initialFfoPpb = clockFfoPpb,
+                                                         noiseModel = tsong.GaussianNoise(
+                                                             standardDeviationPpb = clockRmsJitterPpb,
+                                                             seed = 1459 ) ) )
+        localTimeSeconds, instantaneousLoFfoPpb = clockModel.generate( referenceTimeSeconds )
+
+        timeErrorMicroseconds = sag810.calculateTimeError( localTimeSeconds, referenceTimeSeconds ) / 1e-6
+
+        analysisResult = tsct.time1usMask.evaluate( (referenceTimeSeconds, timeErrorMicroseconds) )
+
+        self.assertFalse( analysisResult, '1us mask passed when it should not have' )
 
 
-if __name__ == "__main__":
-    unittest.main()
-    
+if __name__ == "__main__" :
+    unittest.main( )

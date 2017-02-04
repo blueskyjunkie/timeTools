@@ -29,32 +29,32 @@ class OscillatorModel :
                   agingModel = None,
                   temperatureSensitivityModel = None,
                   noiseModel = None ) :
-        self.__initialFfoPpb = initialFfoPpb
-        self.__agingModel = agingModel
-        self.__temperatureSensitivityModel = temperatureSensitivityModel
-        self.__noiseModel = noiseModel
+        self.initialFfoPpb = initialFfoPpb
+        self.agingModel = agingModel
+        self.temperatureSensitivityModel = temperatureSensitivityModel
+        self.noiseModel = noiseModel
 
 
     def generate( self, referenceTimeSeconds,
                   referenceTemperatureKelvin = None ) :
 
-        ffoPpb = numpy.ones( referenceTimeSeconds.shape ) * self.__initialFfoPpb
+        ffoPpb = numpy.ones( referenceTimeSeconds.shape ) * self.initialFfoPpb
 
-        if self.__agingModel is not None :
-            ffoPpb += self.__agingModel.generate( referenceTimeSeconds )
+        if self.agingModel is not None :
+            ffoPpb += self.agingModel.generate( referenceTimeSeconds )
 
-        if self.__noiseModel is not None :
-            ffoPpb += self.__noiseModel.generate( referenceTimeSeconds )
+        if self.noiseModel is not None :
+            ffoPpb += self.noiseModel.generate( referenceTimeSeconds )
 
-        if self.__temperatureSensitivityModel is not None and referenceTemperatureKelvin is not None :
+        if self.temperatureSensitivityModel is not None and referenceTemperatureKelvin is not None :
             assert (numpy.all( referenceTemperatureKelvin.shape == referenceTemperatureKelvin.shape ))
-            ffoPpb += self.__temperatureSensitivityModel.generate( referenceTemperatureKelvin )
+            ffoPpb += self.temperatureSensitivityModel.generate( referenceTemperatureKelvin )
 
-        elif referenceTemperatureKelvin is None and self.__temperatureSensitivityModel is not None :
+        elif referenceTemperatureKelvin is None and self.temperatureSensitivityModel is not None :
             log.warning(
                 'Temperature sensitivity model was specified but reference temperature not specified for FFO calculations.' )
 
-        elif referenceTemperatureKelvin is not None and self.__temperatureSensitivityModel is None :
+        elif referenceTemperatureKelvin is not None and self.temperatureSensitivityModel is None :
             log.warning(
                 'Temperature sensitivity model was not specified but reference temperature was specified for FFO calculations.' )
 
