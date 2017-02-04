@@ -20,7 +20,7 @@ install:
 
 # Run test
 script:
-  - nosetests --with-cov --logging-level=INFO
+  - nosetests --with-cov --logging-level=DEBUG
   
 # Calculate coverage
 after_success:
