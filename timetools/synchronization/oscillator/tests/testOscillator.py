@@ -62,7 +62,7 @@ class TestClock( unittest.TestCase ) :
 
     def testOscillatorModel3( self ) :
         initialOffsetPpb = 0
-        temperatureSensitivity = tsoa.LinearTemperatureSensitivity( 1, 295 )
+        temperatureSensitivity = tsos.LinearTemperatureSensitivity( 1, 295 )
 
         thisModel = tso.OscillatorModel( initialFfoPpb = initialOffsetPpb,
                                          temperatureSensitivityModel = temperatureSensitivity )
