@@ -3,3 +3,11 @@ __pycache__
 .project
 .pydevproject
 
+# Setuptools distribution folder.
+/dist/
+
+# Python egg metadata, regenerated from source files by setuptools.
+/*.egg-info
+
+/venv/
+/.idea/
