@@ -13,15 +13,16 @@ before_install:
   - export PATH="$HOME/miniconda/bin:$PATH"
   - conda update --yes conda
   - conda info -a
+  - gem 'coveralls', require: false
 # Install packages
 install:
   - conda install --yes python=$TRAVIS_PYTHON_VERSION pip atlas numpy scipy matplotlib
-  - pip install coveralls nose
+  - pip install python-coveralls nose nosexcover
 
 # Run test
 script:
-  - nosetests --with-cov --logging-level=DEBUG
-  
+  - nosetests --with-xcoverage --logging-level=DEBUG --cover-package=myapp --cover-tests
+
 # Calculate coverage
 after_success:
   - coveralls
