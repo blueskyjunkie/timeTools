@@ -77,7 +77,7 @@ class TestItuTG8263( unittest.TestCase ) :
         mpp.xlim( (0, 100) )
         mpp.ylim( (-1000, 1000) )
         mpp.grid( )
-        thisMask.addToPlot( figureHandle.number, linewidth = '4', color = 'b', marker = 'o' )
+        thisMask.addToPlot( figureHandle.number, linewidth = 4, color = 'b', marker = 'o' )
 
         mpp.grid( which = 'minor' )
 
@@ -92,7 +92,7 @@ class TestItuTG8263( unittest.TestCase ) :
         mpp.xlim( (0, 24 * 3600) )
         mpp.ylim( (-15, 15) )
         mpp.grid( )
-        thisMask.addToPlot( figureHandle.number, linewidth = '4', color = 'b', marker = 'o' )
+        thisMask.addToPlot( figureHandle.number, linewidth = 4, color = 'b', marker = 'o' )
 
         mpp.grid( which = 'minor' )
 
@@ -107,7 +107,7 @@ class TestItuTG8263( unittest.TestCase ) :
         mpp.xlim( (0, 3600) )
         mpp.ylim( (-2e-5, 2e-5) )
         mpp.grid( )
-        thisMask.addToPlot( figureHandle.number, linewidth = '4', color = 'b', marker = 'o' )
+        thisMask.addToPlot( figureHandle.number, linewidth = 4, color = 'b', marker = 'o' )
 
         mpp.grid( which = 'minor' )
 
