@@ -4,6 +4,8 @@
 .. image:: https://coveralls.io/repos/github/blueskyjunkie/timetools/badge.svg?branch=master
     :target: https://coveralls.io/github/blueskyjunkie/timetools?branch=master
 
+.. image:: https://zenodo.org/badge/30799444.svg
+   :target: https://zenodo.org/badge/latestdoi/30799444
 
 timetools
 #########
@@ -12,10 +14,8 @@ Python utilities relating to synchronization analysis and visualization such as 
 
 PDV generation using methods such as ITU-T G.8263 are also included.
 
-
 .. contents::
 
-.. section-numbering::
 
 License
 =======
