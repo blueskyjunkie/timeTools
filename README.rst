@@ -27,7 +27,7 @@ Installation
 
 Using ``pip`` is simplest:
 
-.. code-block:: bash
+.. code-block::
     pip install timetools
 
 Dependencies
