@@ -4,7 +4,12 @@ python:
   - "3.5"
   - "3.6"
 
+addons:
+apt_packages:
+  - pandoc
+
 # Setup anaconda
+# This is just a simple way to acquire the necessary libraries for numpy/scipy/matplotlib to be installed correctly.
 before_install:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
@@ -17,11 +22,13 @@ before_install:
 # Install packages
 install:
   - conda install --yes python=$TRAVIS_PYTHON_VERSION pip atlas numpy scipy matplotlib
-  - pip install python-coveralls nose nosexcover
+  - pip install nose nosexcover nose-exclude pypandoc python-coveralls zest.releaser[recommended]
 
-# Run test
 script:
+  # Run tests
   - nosetests --with-xcoverage --logging-level=DEBUG --cover-package=timetools --cover-tests
+  # Test building the distribution package
+  - python3 setup.py bdist_wheel
 
 # Calculate coverage
 after_success:
