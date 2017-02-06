@@ -34,5 +34,16 @@ script:
 # Calculate coverage
 after_success:
   - coveralls
-  
+
+deploy:
+  provider: pypi
+  distributions: bdist_wheel
+  user: blueskyjunkie
+  password:
+    secure: Oo2eu+sNM29pYz6o6+0YLCYURe6dsbTRE//7bvueUjOdklRHwos638D7ygTbCxHLrICEMObcw3jXzJZCeX/ZZAyxNd3C3IGug8YONnbXhn8am6rwrCKOr8QVlSidkaQKoz9lvpqgjYA/iwH5ahFZPpqAWjHUegDIjwf2OOrcE2r2A/LS9xVIsak7bca0h8yTYqdEaA121N9pojKPeVGKnBiMGc39RBFSFWbnsGxLJzTed6VGVvzAAx+Knv1z8Q5LYrnvXSdwvIExvf1fbpINcaw10prK04bOTbzPAfHFzNIBFZpaDX5TwUNwgsvhWfiPePbjvmxqWvL/lfneGww92u83rq3L43zo+aSRFeBQMtwh/YKYCwMAeq9P4zCGGqV4e/00bRdBqXWfEkq3ym6zH+aYJ5TdjQlShrhHwipb3m9DbhykuVY7qjirbV66AcYUDpZ/Glmk09PeS5nvSpoAFmYyM0im1exax7EmatLiJM+I5Q/dQdrjsGTCJImojOvcO9JApZNo4ygG8LAYKrQRHngFIWFtNn18DCmJkDejOqvRY8dgMg28m0vDhBPu1BOj8ATa4JfxkKVd2Z0rKpOt+oxfoEKyTAYpqkKNkhVtClZ1WiDzucGw2yUYJYqn0WzJ97ZhNofk32RiejI1ezBQSR2VOOrhcRuRzpxJgL1Cbh4=
+  on:
+    tags: true
+    repo: blueskyjunkie/timetools
+    condition: $TRAVIS_PYTHON_VERSION == "3.6"
+
 sudo: false
