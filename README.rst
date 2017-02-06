@@ -1,8 +1,8 @@
 .. image:: https://travis-ci.org/blueskyjunkie/timetools.svg?branch=master
-    :target: https://travis-ci.org/blueskyjunkie/timetools
+   :target: https://travis-ci.org/blueskyjunkie/timetools
 
 .. image:: https://coveralls.io/repos/github/blueskyjunkie/timetools/badge.svg?branch=master
-    :target: https://coveralls.io/github/blueskyjunkie/timetools?branch=master
+   :target: https://coveralls.io/github/blueskyjunkie/timetools?branch=master
 
 .. image:: https://zenodo.org/badge/30799444.svg
    :target: https://zenodo.org/badge/latestdoi/30799444
@@ -28,7 +28,7 @@ Installation
 Using ``pip`` is simplest:
 
 .. code-block::
-    pip install timetools
+   pip install timetools
 
 Dependencies
 ============
