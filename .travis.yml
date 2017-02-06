@@ -21,7 +21,7 @@ install:
 
 # Run test
 script:
-  - nosetests --with-xcoverage --logging-level=DEBUG --cover-package=myapp --cover-tests
+  - nosetests --with-xcoverage --logging-level=DEBUG --cover-package=timetools --cover-tests
 
 # Calculate coverage
 after_success:
