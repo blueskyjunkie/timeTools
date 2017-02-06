@@ -5,8 +5,9 @@ python:
   - "3.6"
 
 addons:
-apt_packages:
-  - pandoc
+  apt:
+    packages:
+      - pandoc
 
 # Setup anaconda
 # This is just a simple way to acquire the necessary libraries for numpy/scipy/matplotlib to be installed correctly.
